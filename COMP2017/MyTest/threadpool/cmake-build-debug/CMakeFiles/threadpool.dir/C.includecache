@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/herain/Documents/COMP2017/MyTest/threadpool/main.c
+stdio.h
+-
+pthread.h
+-
+threadpool.h
+/home/herain/Documents/COMP2017/MyTest/threadpool/threadpool.h
+
+/home/herain/Documents/COMP2017/MyTest/threadpool/threadpool.h
+zconf.h
+-
+

@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'jacoco'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    // This dependency is used by the application.
+    implementation 'com.google.guava:guava:29.0-jre'
+
+    // Use JUnit Jupiter API for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+
+    // Use JUnit Jupiter Engine for testing.
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
+
+    implementation 'org.processing:core:3.3.7'
+
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+}
+
+application {
+    // Define the main class for the application.
+    mainClassName = 'org.example.mainFrame'
+}
+
+test {
+    // Use junit platform for unit tests
+    useJUnitPlatform()
+}

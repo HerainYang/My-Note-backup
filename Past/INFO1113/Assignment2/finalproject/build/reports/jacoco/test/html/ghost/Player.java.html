@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Player.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">finalproject</a> &gt; <a href="index.source.html" class="el_package">ghost</a> &gt; <span class="el_source">Player.java</span></div><h1>Player.java</h1><pre class="source lang-java linenums">package ghost;
+
+/**
+ * this class is for waka
+ */
+public class Player {
+    /** x-axis of the position of ghost {@value}*/
+    public int X;
+    /** y-axis of the position of ghost {@value}*/
+    public int Y;
+    private long speed;
+<span class="fc" id="L12">    private int currentMatrixX = 0;</span>
+<span class="fc" id="L13">    private int currentMatrixY = 0;</span>
+
+    /** x-axis of next grid of ghost {@value}*/
+<span class="fc" id="L16">    public int nextMatrixX = 2;</span>
+    /** y-axis of next grid of ghost {@value}*/
+<span class="fc" id="L18">    public int nextMatrixY = 4;</span>
+    /** previous direction  of ghost {@value}*/
+    public int previousDirection;
+    /** current direction  of ghost {@value}*/
+    public int currentDirection;
+    /** waiting direction  of ghost {@value}*/
+    public int waitingDirection;
+    private App windowsFrame;
+
+    /**
+     * @param windowsFrame Current window of the game
+     * @param origX the starting position of the player
+     * @param origY the starting position of the player
+     * @param speed the speed of the player
+     */
+<span class="fc" id="L33">    public Player(App windowsFrame, int origX, int origY, long speed){</span>
+<span class="fc" id="L34">        this.windowsFrame = windowsFrame;</span>
+<span class="fc" id="L35">        previousDirection = windowsFrame.RIGHT;</span>
+<span class="fc" id="L36">        currentDirection = windowsFrame.keyCode;</span>
+<span class="fc" id="L37">        X = origX * 16;</span>
+<span class="fc" id="L38">        Y = origY * 16;</span>
+<span class="fc" id="L39">        this.speed = speed;</span>
+<span class="fc" id="L40">    }</span>
+
+    /**
+     * @return current direction is opposite to previous direction
+     */
+    public boolean isOpposite(){
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if(previousDirection % 2 == 0){</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">            return currentDirection % 2 == 0;</span>
+        } else {
+<span class="fc bfc" id="L49" title="All 2 branches covered.">            return currentDirection % 2 == 1;</span>
+        }
+    }
+
+    /**
+     * walk one pixel according to the current direction
+     */
+    public void walk(int input){
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        if(input == windowsFrame.UP){</span>
+<span class="fc" id="L58">            Y -= speed;</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        } else if (input == windowsFrame.DOWN){</span>
+<span class="fc" id="L60">            Y += speed;</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        } else if (input == windowsFrame.RIGHT){</span>
+<span class="fc" id="L62">            X += speed;</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">        } else if (input == windowsFrame.LEFT){</span>
+<span class="fc" id="L64">            X -= speed;</span>
+        }
+<span class="fc" id="L66">    }</span>
+
+    /**
+     * @param nextX x-axis of next possible grid
+     * @param nextY y-axis of next possible grid
+     * @return if it is true, the next grid is a wall
+     */
+    public boolean isWall(int nextX, int nextY){
+<span class="fc bfc" id="L74" title="All 8 branches covered.">        return !(windowsFrame.gameMaps[nextY][nextX] == 0 || windowsFrame.gameMaps[nextY][nextX] == 7 || windowsFrame.gameMaps[nextY][nextX] == 8 || windowsFrame.gameMaps[nextY][nextX] == 9);</span>
+    }
+
+    /**
+     * what predict do:
+     *   1.calculate current Grid
+     *   2.calculate next Grid
+     * @param nextWay
+     */
+    public void predict(int nextWay){
+<span class="fc" id="L84">        currentMatrixX = X / 16;</span>
+<span class="fc" id="L85">        currentMatrixY = Y / 16;</span>
+<span class="fc" id="L86">        System.out.println(X);</span>
+<span class="fc" id="L87">        System.out.println(Y);</span>
+<span class="fc" id="L88">        System.out.println(nextWay);</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">        if(nextWay % 2 == 0) {</span>
+<span class="fc" id="L90">            nextMatrixX = currentMatrixX;</span>
+<span class="fc" id="L91">            nextMatrixY = currentMatrixY + (nextWay - 39);</span>
+        } else {
+<span class="fc" id="L93">            nextMatrixY = currentMatrixY;</span>
+<span class="fc" id="L94">            nextMatrixX = currentMatrixX + (nextWay - 38);</span>
+        }
+<span class="fc" id="L96">    }</span>
+
+    private int previousDirectNextMatrixX;
+    private int previousDirectNextMatrixY;
+
+    /**
+     * if direction is unchanged, keep moving until it reach a wall
+     * if direction is change and the next direction is opposite to the current one, turn around immediately
+     * if direction is change but not opposite, if next direction is not a wall, turn immediately, if it is a wall, wait until this direction is not a wall
+     * @return next position player will goto
+     */
+    public Message run() {
+<span class="pc bpc" id="L108" title="3 of 8 branches missed.">        if (windowsFrame.keyCode == windowsFrame.LEFT || windowsFrame.keyCode == windowsFrame.RIGHT || windowsFrame.keyCode == windowsFrame.UP || windowsFrame.keyCode == windowsFrame.DOWN) {</span>
+<span class="fc" id="L109">            currentDirection = windowsFrame.keyCode;</span>
+        }
+<span class="fc bfc" id="L111" title="All 2 branches covered.">        if(currentDirection != previousDirection){//direction is changed</span>
+
+<span class="pc bpc" id="L113" title="1 of 4 branches missed.">            if(isOpposite() &amp;&amp; waitingDirection == -1){//opposite direction</span>
+<span class="fc" id="L114">                walk(currentDirection);</span>
+<span class="fc" id="L115">                previousDirection = currentDirection;</span>
+            } else {
+<span class="fc" id="L117">                waitingDirection = currentDirection;</span>
+<span class="pc bpc" id="L118" title="1 of 4 branches missed.">                if(X % 16 == 0 &amp;&amp; Y % 16 == 0){</span>
+<span class="fc" id="L119">                    predict(waitingDirection);</span>
+<span class="fc" id="L120">                    boolean result = isWall(nextMatrixX, nextMatrixY);</span>
+<span class="fc" id="L121">                    System.out.println(result);</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">                    if(result) {//next grid is wall</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">                        if(previousDirection % 2 == 0) {</span>
+<span class="fc" id="L124">                            previousDirectNextMatrixX = currentMatrixX;</span>
+<span class="fc" id="L125">                            previousDirectNextMatrixY = currentMatrixY + (previousDirection - 39);</span>
+                        } else {
+<span class="fc" id="L127">                            previousDirectNextMatrixY = currentMatrixY;</span>
+<span class="fc" id="L128">                            previousDirectNextMatrixX = currentMatrixX + (previousDirection - 38);</span>
+                        }
+<span class="fc" id="L130">                        System.out.println(previousDirectNextMatrixX);</span>
+<span class="fc" id="L131">                        System.out.println(previousDirectNextMatrixY);</span>
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">                        if(!isWall(previousDirectNextMatrixX, previousDirectNextMatrixY))</span>
+<span class="nc" id="L133">                            walk(previousDirection);</span>
+                    } else {
+<span class="fc" id="L135">                        previousDirection = waitingDirection;</span>
+<span class="fc" id="L136">                        walk(waitingDirection);</span>
+<span class="fc" id="L137">                        waitingDirection = -1;</span>
+                    }
+<span class="fc" id="L139">                } else {</span>
+<span class="fc" id="L140">                    walk(previousDirection);</span>
+                }
+<span class="fc bfc" id="L142" title="All 2 branches covered.">                if(X % 16 == 0) {</span>
+<span class="fc" id="L143">                    currentMatrixX = X / 16;</span>
+<span class="fc" id="L144">                    nextMatrixX = currentMatrixX + (currentDirection - 38);</span>
+                }
+<span class="fc bfc" id="L146" title="All 2 branches covered.">                if(Y % 16 == 0) {</span>
+<span class="fc" id="L147">                    currentMatrixY = Y / 16;</span>
+<span class="fc" id="L148">                    nextMatrixY = currentMatrixY + (currentDirection - 39);</span>
+                }
+            }
+        } else {
+<span class="fc" id="L152">            predict(previousDirection);</span>
+<span class="pc bpc" id="L153" title="5 of 6 branches missed.">            if(!isWall(nextMatrixX, nextMatrixY) || X % 16 != 0 || Y % 16 !=0){</span>
+<span class="fc" id="L154">                walk(previousDirection);</span>
+            }
+        }
+<span class="fc" id="L157">        return new Message(X, Y, previousDirection, null);</span>
+    }
+
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

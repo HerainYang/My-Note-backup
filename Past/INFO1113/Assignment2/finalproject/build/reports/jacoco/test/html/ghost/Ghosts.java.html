@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Ghosts.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">finalproject</a> &gt; <a href="index.source.html" class="el_package">ghost</a> &gt; <span class="el_source">Ghosts.java</span></div><h1>Ghosts.java</h1><pre class="source lang-java linenums">package ghost;
+
+/**
+ * this class is the abstract class of all of the ghost, need to implement findTarget()
+ */
+public abstract class Ghosts {
+    /** x-axis of the position of ghost {@value}*/
+    public int X;
+    /** y-axis of the position of ghost {@value}*/
+    public int Y;
+    /** x-axis of grid of ghost {@value}*/
+<span class="fc" id="L12">    public int current_Matrix_X = 0;</span>
+    /** y-axis of grid of ghost {@value}*/
+<span class="fc" id="L14">    public int current_Matrix_Y = 0;</span>
+    private long speed;
+<span class="fc" id="L16">    private int next_Matrix_X = 2;</span>
+<span class="fc" id="L17">    private int next_Matrix_Y = 4;</span>
+    //    int previousDirection;
+    /** The game's window, is used to access some public attributes {@value}*/
+    public App windowsFrame;
+
+    /** The top left corner of the map {@value}*/
+    public Message leftUp;
+    /** The top right corner of the map {@value}*/
+    public Message rightUp;
+    /** The bottom left corner of the map {@value}*/
+    public Message leftDown;
+    /** The bottom right corner of the map {@value}*/
+    public Message rightDown;
+
+    public static final int SCATTERMODE = 0;
+    public static final int CHASEMODE = 1;
+
+    public static final int NORMAL = 0;
+    public static final int AMBUSHER = 1;
+    public static final int CHASER = 2;
+    public static final int IGNORANT = 3;
+    public static final int WHIM = 4;
+
+    public int currentDirection;
+    private int ghost_Type;
+
+    /**
+     * @param windowsFrame Current window of the game
+     * @param origX the starting position of the ghost
+     * @param origY the starting position of the ghost
+     * @param speed the speed of the ghost
+     */
+<span class="fc" id="L49">    public Ghosts(App windowsFrame, int origX, int origY, long speed) {</span>
+<span class="fc" id="L50">        this.windowsFrame = windowsFrame;</span>
+<span class="fc" id="L51">        currentDirection = windowsFrame.RIGHT;</span>
+<span class="fc" id="L52">        X = origX * 16;</span>
+<span class="fc" id="L53">        Y = origY * 16;</span>
+
+<span class="fc" id="L55">        leftUp = new Message(windowsFrame.mapLeft * 16, windowsFrame.mapUp * 16, 0, null);</span>
+<span class="fc" id="L56">        rightUp = new Message(windowsFrame.mapRight * 16, windowsFrame.mapUp * 16, 0, null);</span>
+<span class="fc" id="L57">        leftDown = new Message(windowsFrame.mapLeft * 16, windowsFrame.mapDown * 16, 0, null);</span>
+<span class="fc" id="L58">        rightDown = new Message(windowsFrame.mapRight * 16, windowsFrame.mapDown * 16, 0, null);</span>
+<span class="fc" id="L59">        this.speed = speed;</span>
+<span class="fc" id="L60">    }</span>
+
+    /**
+     * Set the type of the ghost
+     * @param ghost_Type type of the ghost
+     */
+    public void setGhost_Type(int ghost_Type) {
+<span class="fc" id="L67">        this.ghost_Type = ghost_Type;</span>
+<span class="fc" id="L68">    }</span>
+
+    /**
+     * get the type of the ghost
+     * @return type of the ghost
+     */
+    public int getGhost_Type() {
+<span class="fc" id="L75">        return ghost_Type;</span>
+    }
+
+    /**
+     * walk one pixel according to the current direction
+     */
+    public void walk() {
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        if (currentDirection == windowsFrame.UP) {</span>
+<span class="fc" id="L83">            Y -= speed;</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        } else if (currentDirection == windowsFrame.DOWN) {</span>
+<span class="fc" id="L85">            Y += speed;</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        } else if (currentDirection == windowsFrame.RIGHT) {</span>
+<span class="fc" id="L87">            X += speed;</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">        } else if (currentDirection == windowsFrame.LEFT) {</span>
+<span class="fc" id="L89">            X -= speed;</span>
+        }
+<span class="fc" id="L91">    }</span>
+
+    /**
+     * test if the next step is wall or not
+     * @param direction direction of the next pixel
+     * @return if it is true it means the next pixel is not a wall
+     */
+    public boolean accessible(int direction) {
+<span class="fc" id="L99">        current_Matrix_X = X / 16;</span>
+<span class="fc" id="L100">        current_Matrix_Y = Y / 16;</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (direction % 2 == 0) {</span>
+<span class="fc" id="L102">            int move = direction - 39;</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">            if(current_Matrix_Y + move &lt; 0){</span>
+<span class="fc" id="L104">                System.out.println(&quot;out of bound: inaccessible&quot;);</span>
+<span class="fc" id="L105">                return false;</span>
+            }
+<span class="pc bpc" id="L107" title="3 of 8 branches missed.">            return windowsFrame.gameMaps[current_Matrix_Y + move][current_Matrix_X] == 0 || windowsFrame.gameMaps[current_Matrix_Y + move][current_Matrix_X] == 7 || windowsFrame.gameMaps[current_Matrix_Y + move][current_Matrix_X] == 8 || windowsFrame.gameMaps[current_Matrix_Y + move][current_Matrix_X] == 9;</span>
+        } else {
+<span class="fc" id="L109">            int move = direction - 38;</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">            if(current_Matrix_X + move &lt; 0){</span>
+<span class="fc" id="L111">                System.out.println(&quot;out of bound: inaccessible&quot;);</span>
+<span class="fc" id="L112">                return false;</span>
+            }
+<span class="pc bpc" id="L114" title="2 of 8 branches missed.">            return windowsFrame.gameMaps[current_Matrix_Y][current_Matrix_X + move] == 0 || windowsFrame.gameMaps[current_Matrix_Y][current_Matrix_X + move] == 7 || windowsFrame.gameMaps[current_Matrix_Y][current_Matrix_X + move] == 8 || windowsFrame.gameMaps[current_Matrix_Y + move][current_Matrix_X] == 9;</span>
+        }
+    }
+
+    /**
+     * counting the distance between next position and ghost
+     * @param nextPosition next possible position
+     * @param targetPosition the position of the target
+     * @return the distance
+     */
+    public double countingDistance(Message nextPosition, Message targetPosition) {
+<span class="fc" id="L125">        current_Matrix_X = X / 16;</span>
+<span class="fc" id="L126">        current_Matrix_Y = Y / 16;</span>
+<span class="fc" id="L127">        return (int) Math.sqrt(Math.pow((targetPosition.X &gt;&gt; 4) - nextPosition.X, 2) + Math.pow((targetPosition.Y &gt;&gt; 4) - nextPosition.Y, 2));</span>
+    }
+
+    /**
+     * predict the next position according to the direction
+     * @param nextWay direction
+     * @return next position
+     */
+    public Message predict(int nextWay) {
+<span class="fc" id="L136">        current_Matrix_X = X / 16;</span>
+<span class="fc" id="L137">        current_Matrix_Y = Y / 16;</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">        if (nextWay % 2 == 0) {</span>
+<span class="fc" id="L139">            next_Matrix_X = current_Matrix_X;</span>
+<span class="fc" id="L140">            next_Matrix_Y = current_Matrix_Y + (nextWay - 39);</span>
+        } else {
+<span class="fc" id="L142">            next_Matrix_Y = current_Matrix_Y;</span>
+<span class="fc" id="L143">            next_Matrix_X = current_Matrix_X + (nextWay - 38);</span>
+        }
+<span class="fc" id="L145">        return new Message(next_Matrix_X, next_Matrix_Y, 0, null);</span>
+    }
+
+    /**
+     * judge which way is the closest way to the target
+     * @param targetPosition position of the target
+     * @return next direction ghost should go to
+     */
+    public int judgement(Message targetPosition) {
+<span class="fc" id="L154">        int nextDirection = -1;</span>
+        double predictDistance;
+<span class="fc" id="L156">        double distance = Integer.MAX_VALUE;</span>
+
+<span class="fc bfc" id="L158" title="All 2 branches covered.">        if (currentDirection % 2 == 0) {</span>
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">            if (accessible(currentDirection)) {</span>
+<span class="fc" id="L160">                predictDistance = countingDistance(predict(currentDirection), targetPosition);</span>
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">                if (predictDistance &lt; distance) {</span>
+<span class="fc" id="L162">                    nextDirection = currentDirection;</span>
+<span class="fc" id="L163">                    distance = predictDistance;</span>
+                }
+            }
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">            if (accessible(windowsFrame.RIGHT)) {</span>
+<span class="fc" id="L167">                predictDistance = countingDistance(predict(windowsFrame.RIGHT), targetPosition);</span>
+<span class="pc bpc" id="L168" title="1 of 2 branches missed.">                if (predictDistance &lt; distance) {</span>
+<span class="nc" id="L169">                    nextDirection = windowsFrame.RIGHT;</span>
+<span class="nc" id="L170">                    distance = predictDistance;</span>
+                }
+            }
+<span class="fc bfc" id="L173" title="All 2 branches covered.">            if (accessible(windowsFrame.LEFT)) {</span>
+<span class="fc" id="L174">                predictDistance = countingDistance(predict(windowsFrame.LEFT), targetPosition);</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">                if (predictDistance &lt; distance) {</span>
+<span class="fc" id="L176">                    nextDirection = windowsFrame.LEFT;</span>
+                }
+            }
+        } else {
+<span class="pc bpc" id="L180" title="1 of 2 branches missed.">            if (accessible(currentDirection)) {</span>
+<span class="fc" id="L181">                predictDistance = countingDistance(predict(currentDirection), targetPosition);</span>
+<span class="pc bpc" id="L182" title="1 of 2 branches missed.">                if (predictDistance &lt; distance) {</span>
+<span class="fc" id="L183">                    nextDirection = currentDirection;</span>
+<span class="fc" id="L184">                    distance = predictDistance;</span>
+                }
+            }
+<span class="pc bpc" id="L187" title="1 of 2 branches missed.">            if (accessible(windowsFrame.UP)) {</span>
+<span class="fc" id="L188">                predictDistance = countingDistance(predict(windowsFrame.UP), targetPosition);</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">                if (predictDistance &lt; distance) {</span>
+<span class="fc" id="L190">                    nextDirection = windowsFrame.UP;</span>
+<span class="fc" id="L191">                    distance = predictDistance;</span>
+                }
+            }
+<span class="pc bpc" id="L194" title="1 of 2 branches missed.">            if (accessible(windowsFrame.DOWN)) {</span>
+<span class="fc" id="L195">                predictDistance = countingDistance(predict(windowsFrame.DOWN), targetPosition);</span>
+<span class="pc bpc" id="L196" title="1 of 2 branches missed.">                if (predictDistance &lt; distance) {</span>
+<span class="nc" id="L197">                    nextDirection = windowsFrame.DOWN;</span>
+                }
+            }
+        }
+<span class="fc" id="L201">        return nextDirection;</span>
+    }
+
+    /**
+     * @return if it is true it mean ghost encounter a intersection
+     */
+    public boolean intersection() {
+<span class="fc bfc" id="L208" title="All 2 branches covered.">        if (currentDirection % 2 == 0) {</span>
+<span class="pc bpc" id="L209" title="3 of 4 branches missed.">            return accessible(windowsFrame.RIGHT) || accessible(windowsFrame.LEFT);</span>
+        } else {
+<span class="pc bpc" id="L211" title="1 of 4 branches missed.">            return accessible(windowsFrame.UP) || accessible(windowsFrame.DOWN);</span>
+        }
+    }
+
+    /**
+     * turn backward
+     */
+    public void turnBack(){
+<span class="fc bfc" id="L219" title="All 2 branches covered.">        if (currentDirection % 2 == 0){</span>
+<span class="fc" id="L220">            currentDirection += (39 - currentDirection) * 2;</span>
+        } else {
+<span class="fc" id="L222">            currentDirection += (38 - currentDirection) * 2;</span>
+        }
+<span class="fc" id="L224">    }</span>
+
+    /**
+     * if it is a intersection, make a choose and decide the next direction
+     * if it isn't an intersection and current direction is movable, keep going
+     * else it turn back
+     * @param mode current mode
+     * @param playerPosition position of the player
+     * @return the next position of the ghost
+     */
+    public Message run(int mode, Message playerPosition){
+<span class="fc" id="L235">        Message target = findTarget(mode, playerPosition);</span>
+<span class="pc bpc" id="L236" title="1 of 4 branches missed.">        if(X % 16 == 0 &amp;&amp; Y % 16 == 0){</span>
+<span class="pc bpc" id="L237" title="1 of 2 branches missed.">            if(intersection()){</span>
+<span class="nc" id="L238">                currentDirection = judgement(target);</span>
+<span class="nc" id="L239">                walk();</span>
+<span class="fc bfc" id="L240" title="All 2 branches covered.">            } else if (accessible(currentDirection)) {</span>
+<span class="fc" id="L241">                walk();</span>
+            } else {
+                //turn back
+<span class="fc" id="L244">                System.out.println(&quot;turn back!&quot;);</span>
+<span class="fc" id="L245">                turnBack();</span>
+<span class="fc" id="L246">                walk();</span>
+            }
+        } else {
+<span class="fc" id="L249">            walk();</span>
+        }
+<span class="fc" id="L251">        return new Message(X, Y, currentDirection, target);</span>
+    }
+
+
+    /**
+     * decide a direction which is accessible
+     * @param frame
+     */
+    public void randomDirection(int frame){
+<span class="fc" id="L260">        int random = frame % 3;</span>
+        //vertical
+<span class="fc bfc" id="L262" title="All 2 branches covered.">        if(currentDirection % 2 == 0){</span>
+            do{
+<span class="pc bpc" id="L264" title="1 of 2 branches missed.">                if(random == 0){</span>
+<span class="fc" id="L265">                    currentDirection = windowsFrame.RIGHT;</span>
+<span class="nc bnc" id="L266" title="All 2 branches missed.">                } else if (random == 1){</span>
+<span class="nc" id="L267">                    currentDirection = windowsFrame.LEFT;</span>
+                }
+<span class="fc" id="L269">                random = (random + 1) % 3;</span>
+<span class="pc bpc" id="L270" title="1 of 2 branches missed.">            } while (!accessible(currentDirection));</span>
+        } else {
+            do{
+<span class="fc bfc" id="L273" title="All 2 branches covered.">                if(random == 0){</span>
+<span class="fc" id="L274">                    currentDirection = windowsFrame.UP;</span>
+<span class="pc bpc" id="L275" title="1 of 2 branches missed.">                } else if (random == 1){</span>
+<span class="fc" id="L276">                    currentDirection = windowsFrame.DOWN;</span>
+                }
+<span class="fc" id="L278">                random = (random + 1) % 3;</span>
+<span class="fc bfc" id="L279" title="All 2 branches covered.">            } while (!accessible(currentDirection));</span>
+        }
+<span class="fc" id="L281">    }</span>
+
+    /**
+     * decide the next direction randomly when encounter an intersection, using frame as seed of random number
+     * @param frame use to generate random number
+     * @return the next position
+     */
+    public Message escape(int frame){
+<span class="fc" id="L289">        Message target = new Message(X, Y, currentDirection, null);</span>
+<span class="pc bpc" id="L290" title="1 of 4 branches missed.">        if(X % 16 == 0 &amp;&amp; Y % 16 == 0){</span>
+<span class="fc bfc" id="L291" title="All 2 branches covered.">            if(intersection()){</span>
+<span class="fc" id="L292">                randomDirection(frame);</span>
+<span class="fc" id="L293">                System.out.println(currentDirection);</span>
+<span class="fc" id="L294">                walk();</span>
+<span class="pc bpc" id="L295" title="1 of 2 branches missed.">            } else if (accessible(currentDirection)) {</span>
+<span class="nc" id="L296">                walk();</span>
+            } else {
+                //turn back
+<span class="fc" id="L299">                System.out.println(&quot;turn back!&quot;);</span>
+<span class="fc" id="L300">                turnBack();</span>
+<span class="fc" id="L301">                walk();</span>
+            }
+        } else {
+<span class="fc" id="L304">            walk();</span>
+        }
+<span class="fc" id="L306">        return new Message(X, Y, currentDirection, target);</span>
+    }
+
+    /**
+     * find the target according to the characteristic of the ghost
+     * @param mode current ghost mode
+     * @param playerPosition  position of the player
+     * @return position of the target
+     */
+    abstract public Message findTarget(int mode, Message playerPosition);
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

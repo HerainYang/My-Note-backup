@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConfigReader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">finalproject</a> &gt; <a href="index.source.html" class="el_package">ghost</a> &gt; <span class="el_source">ConfigReader.java</span></div><h1>ConfigReader.java</h1><pre class="source lang-java linenums">package ghost;
+
+import org.json.simple.*;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import java.io.FileReader;
+import java.io.IOException;
+
+/**
+ * This class is used to read the configuration file and return the attribute
+ */
+public class ConfigReader {
+    private JSONObject configFile;
+    private JSONParser parser;
+
+    /**
+     * read the file as .json
+     * @throws IOException file doesn't exist
+     * @throws ParseException file isn't json file
+     */
+<span class="fc" id="L21">    public ConfigReader() throws IOException, ParseException {</span>
+<span class="fc" id="L22">        FileReader reader = new FileReader(&quot;config.json&quot;);</span>
+<span class="fc" id="L23">        parser = new JSONParser();</span>
+<span class="fc" id="L24">        Object object = parser.parse(reader);</span>
+<span class="fc" id="L25">        configFile = (JSONObject) object;</span>
+<span class="fc" id="L26">    }</span>
+
+    /**
+     * @return file name of the map
+     */
+    public String getMapFile(){
+<span class="fc" id="L32">        return (String) configFile.get(&quot;map&quot;);</span>
+    }
+
+    /**
+     * @return the number of live of the player
+     */
+    public long getLives(){
+<span class="fc" id="L39">        return (long) configFile.get(&quot;lives&quot;);</span>
+    }
+
+    /**
+     * @return the speed of the ghosts and player
+     */
+    public long getSpeed(){
+<span class="fc" id="L46">        return (Long) configFile.get(&quot;speed&quot;);</span>
+    }
+
+    /**
+     * @return the length of each mode (scatter mode and chase mode)
+     */
+    public long[] getGhostMode(){
+<span class="fc" id="L53">        JSONArray jsonArray = (JSONArray) configFile.get(&quot;modeLengths&quot;);</span>
+<span class="fc" id="L54">        long[] ghostMode = new long[jsonArray.size()];</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        for(int i = 0; i &lt; jsonArray.size(); i ++){</span>
+<span class="fc" id="L56">            ghostMode[i] = (long) jsonArray.get(i);</span>
+        }
+<span class="fc" id="L58">        return ghostMode;</span>
+    }
+
+    /**
+     * return the length of frightened mode
+     * @return
+     */
+    public long getFrightenedLength(){
+<span class="fc" id="L66">        return (long) configFile.get(&quot;frightenedLength&quot;);</span>
+    }
+
+    /**
+     * return the length of soda mode
+     * @return
+     */
+    public long getSodaLength(){
+<span class="fc" id="L74">        return (long) configFile.get(&quot;sodaLength&quot;);</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

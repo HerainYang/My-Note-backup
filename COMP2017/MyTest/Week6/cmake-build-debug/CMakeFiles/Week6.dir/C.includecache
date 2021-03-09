@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/herain/Documents/COMP2017/MyTest/Week6/decs.h
+
+/home/herain/Documents/COMP2017/MyTest/Week6/headerB.h
+
+/home/herain/Documents/COMP2017/MyTest/Week6/main.c
+stdio.h
+-
+headerB.h
+/home/herain/Documents/COMP2017/MyTest/Week6/headerB.h
+decs.h
+/home/herain/Documents/COMP2017/MyTest/Week6/decs.h
+math.h
+-
+

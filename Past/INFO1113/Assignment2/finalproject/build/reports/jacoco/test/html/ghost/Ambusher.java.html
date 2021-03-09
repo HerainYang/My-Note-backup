@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Ambusher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">finalproject</a> &gt; <a href="index.source.html" class="el_package">ghost</a> &gt; <span class="el_source">Ambusher.java</span></div><h1>Ambusher.java</h1><pre class="source lang-java linenums">package ghost;
+
+public class Ambusher extends Ghosts{
+    /**
+     * set ghost type as Ambusher
+     * @see Ghosts#Ghosts(App, int, int, long)
+     * @param windowsFrame Current window of the game
+     * @param origX the starting position of the ghost
+     * @param origY the starting position of the ghost
+     * @param speed the speed of the ghost
+     */
+    public Ambusher(App windowsFrame, int origX, int origY, long speed) {
+<span class="fc" id="L13">        super(windowsFrame, origX, origY, speed);</span>
+<span class="fc" id="L14">        setGhost_Type(Ghosts.AMBUSHER);</span>
+<span class="fc" id="L15">    }</span>
+
+    /**
+     * Chase mode: Top right corner
+     * Scatter mode: Four grid spaces ahead of Waka (based on Waka’s current direction)
+     * @param mode current ghost mode
+     * @param playerPosition  position of the player
+     * @return the target position
+     */
+    @Override
+    public Message findTarget(int mode, Message playerPosition) {
+<span class="fc" id="L26">        System.out.println(&quot;ambusher find target&quot;);</span>
+<span class="fc" id="L27">        current_Matrix_X = X/16;</span>
+<span class="fc" id="L28">        current_Matrix_Y = Y/16;</span>
+
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        if(mode == SCATTERMODE){</span>
+<span class="fc" id="L31">            return rightUp;</span>
+        } else {
+<span class="fc" id="L33">            int playerMatrixX = playerPosition.X / 16;</span>
+<span class="fc" id="L34">            int playerMatrixY = playerPosition.Y / 16;</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">            if(playerPosition.direction % 2 == 0){</span>
+<span class="fc" id="L36">                int newPositionY = playerMatrixY + (playerPosition.direction - 39) * 4;</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">                if (newPositionY &gt; windowsFrame.mapDown) {</span>
+<span class="fc" id="L38">                    newPositionY = windowsFrame.mapDown;</span>
+                }
+<span class="fc bfc" id="L40" title="All 2 branches covered.">                if (newPositionY &lt; windowsFrame.mapUp) {</span>
+<span class="fc" id="L41">                    newPositionY = windowsFrame.mapUp;</span>
+                }
+<span class="fc" id="L43">                return new Message(playerPosition.X, newPositionY * 16, 0, null);</span>
+            } else {
+<span class="fc" id="L45">                int newPositionX = playerMatrixX + (playerPosition.direction - 38) * 4;</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">                if (newPositionX &lt; windowsFrame.mapLeft) {</span>
+<span class="fc" id="L47">                    newPositionX = windowsFrame.mapLeft;</span>
+                }
+<span class="fc bfc" id="L49" title="All 2 branches covered.">                if (newPositionX &gt; windowsFrame.mapRight) {</span>
+<span class="fc" id="L50">                    newPositionX = windowsFrame.mapRight;</span>
+                }
+<span class="fc" id="L52">                return new Message(newPositionX * 16, playerPosition.Y, 0, null);</span>
+            }
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

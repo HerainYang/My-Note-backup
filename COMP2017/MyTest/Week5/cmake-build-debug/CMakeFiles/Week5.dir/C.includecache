@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/herain/Documents/COMP2017/MyTest/Week5/main.c
+stdio.h
+-
+signal.h
+-
+unistd.h
+-
+errno.h
+-
+fcntl.h
+-
+

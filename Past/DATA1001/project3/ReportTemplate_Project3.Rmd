@@ -1,0 +1,121 @@
+---
+title: "Recommendation for investor who want to invest a airline company"
+author: "500425334"
+subtitle: "Project 3"
+date: "University of Sydney | DATA1001 | April 2020"
+output:
+  html_document:
+    fig_caption: yes
+    number_sections: yes
+    self_contained: yes
+    theme: flatly
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    code_folding: hide
+---
+
+<br>
+
+# Recommendation
+Customer: Investor who want to take a stake in an airline\
+Time: Assume this recommendation is produced at the end 2018 (data is from 2003 to 2018)\
+Recommendation: Invest Singapore airline, which has 1650 routes and 4 billions passengers in the last 15 years, the price of stake is expected to rise in March, June, September and December.
+
+<br>
+
+# Evidence
+
+## Limitation
+All of these samples are relevant to Australia, it is hard to know operating status in other country, so there is a selection bais.
+
+## IDA
+```{r}
+# International Airlines operating from Australia
+flights = read.csv("http://www.maths.usyd.edu.au/u/UG/JM/DATA1001/r/current/projects/2020data/flights.csv")
+library(plyr)
+library(tidyverse)
+
+## Quick snapshot
+dim(flights)
+str(flights)
+
+```
+
+## Which airline company held the most routes?
+```{r}
+t1 = table(flights$Airline[flights$Stops==0])
+head(sort(t1, decreasing = TRUE), 10)
+```
+Qantas Airways held 13858 routes, which was the most in all company.
+
+
+
+## The number of passengers per airline per year from 2003 to 2018
+```{r}
+flights_seat <- flights[flights$Stops==0,] %>% mutate(All_Flights*Max_Seats)
+data2 = aggregate(All_Flights * Max_Seats ~ Airline + Year, data = flights_seat, sum)
+colnames(data2) <- c("Airline", "Year", "All_seat")
+head(data2[order(-data2$All_seat),], 10)
+head(data2[order(data2$All_seat),], 10)
+```
+<br>
+In 2017, there are 470 millions people chose Singapore Airlines, which was the most in the past 15 years, and in 2015, hainan airlines only have 4500 passengers, which was the least in past 15 years.
+
+## Which month does the largest number of people travel?
+```{r}
+#into Australia
+table(flights$Month_num[flights$In_Out=="I"])
+#out of Australia
+table(flights$Month_num[flights$In_Out=="O"])
+#total
+table(flights$Month_num) %>% as.data.frame %>% ggplot(aes(x = Var1, y = Freq)) + geom_histogram(stat = "identity") 
+```
+Summer is a more popular season for traveling, the peak of number of seats will appear each 3 months.
+
+## Which company's number of passenger ascends the fastest?
+```{r}
+t1DataFrame = as.data.frame(t1)
+ratio = lapply(t1DataFrame$Var1, function(x){lm(data2$All_seat[data2$Airline == x] ~ data2$Year[data2$Airline == x])$coeff[[2]]})
+ratio_unlist = unlist(ratio)
+t1DataFrame$ratio <- ratio_unlist
+head(t1DataFrame[order(t1DataFrame$ratio, decreasing = TRUE), ], 10)
+```
+Singapore airlines' number of passengers increase 19 million per year in average, far more than other company.
+
+## How many route and seats did Singapore airlines operate in total?
+```{r}
+sum(flights_seat$`All_Flights * Max_Seats`[flights_seat$Airline=="Singapore Airlines"])
+sum(flights_seat$Airline=="Singapore Airlines")
+
+sum(flights_seat$`All_Flights * Max_Seats`)/84
+```
+in the past 15 years, 4 billions people chose Singapore airlines, more than the average, and it has 1650 routes.
+
+## What is the increase in the number of Singapore airlines's passenger from 2003 and 2018, and the prediction of the number in 2019
+```{r}
+sinData = data2[data2$Airline=="Singapore Airlines",]
+ggplot(sinData, aes(Year, All_seat/10000)) + geom_point() + ggtitle("Number of seat operate by Singapore Airlines from 2003 to 2018") + ylab("seat (in thousands)") + geom_smooth(method='lm', se=FALSE)
+l = lm(sinData$All_seat ~ sinData$Year)
+l
+cor(sinData$All_seat, sinData$Year)
+2019 * l$coeff[[2]] + l$coeff[[1]]
+```
+The graph shows that the number of passengers is increasing from 2003 to 2018 and the number of passengers in 2019 is prediected to be 441,674,007.
+
+
+# Other Evidence 
+
+*Max 100 words: Cites at least 2 related articles (research or media) that add weight, subtlety or limitations to the evidence from data.*
+
+https://www.anna.aero/ suggest that Singapore airlines sees steady growth, after a significant fall in traffic in 2009, the airline has gradually recovered its passenger numbers following eight consecutive years of growth., and it opened a new market in Sweden in 2017.
+
+M Rahman suggest that Singapore Airlines is a world-renowned airline, One of the biggest strengths of SIA is its position in the European markets. However, Over reliance on international traffic is a weakness of Singapore Airlines. But overall, the airline has opportunities to increase flight frequencies in its existing markets.
+
+# Reference
+Singapore Airlines sees steady growth; Jakarta is largest link, Australia is biggest international market, Retrieved 30 April, 2018, from https://www.anna.aero/2018/04/30/singapore-airlines-sees-steady-growth-jakarta-is-largest-link-australia-is-biggest-international-market/
+
+M Rahman (02 January 2020), SWOT analysis of Singapore Airlines, from https://howandwhat.net/swot-analysis-singapore-airlines-singapore-airlines-swot-analysis/
+
+#Data Science Reflection
+Technique in DATA1001 help me to organize data, I can turn it into numeric or graphic information which is easier to read, moreover, I can use this method to predict value in the future.

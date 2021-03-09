@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/Assignments1.dir/timetable.c.o  -o Assignments1 

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>App.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">finalproject</a> &gt; <a href="index.source.html" class="el_package">ghost</a> &gt; <span class="el_source">App.java</span></div><h1>App.java</h1><pre class="source lang-java linenums">package ghost;
+import processing.core.PApplet;
+import processing.event.KeyEvent;
+
+/**
+ * main class of the game, inherit from PApplet
+ * @see PApplet
+ */
+public class App extends PApplet {
+    /** width of the game's screen. {@value} */
+    public static final int WIDTH = 448;
+    /** height of the game's screen. {@value}*/
+    public static final int HEIGHT = 576;
+    /** The map of the game, store each grid as a integer. {@value}*/
+<span class="fc" id="L15">    public int[][] gameMaps = new int[36][28];</span>
+    /** The edge value of the wall of the map. {@value}*/
+    public int mapLeft, mapDown, mapRight, mapUp;
+    /** The game parser of the game. {@value} */
+    public GameParser gameParser;
+
+    /** Create a game parser of the game. */
+<span class="fc" id="L22">    public App(){</span>
+<span class="fc" id="L23">        gameParser = new GameParser(this);</span>
+<span class="fc" id="L24">    }</span>
+
+    /** Setting the width and height of the game's window, called before the game's window is created
+     * @see PApplet#settings() */
+    @Override
+    public void settings() {
+<span class="fc" id="L30">        size(WIDTH, HEIGHT);</span>
+<span class="fc" id="L31">    }</span>
+
+    /** Read the resource files of images and fonts, read the configuration file of the game, initialize the basic game attributes like lives, speed and length of each mode, called at the first frame of the game.
+     * @see PApplet#setup() */
+    @Override
+    public void setup() {
+<span class="fc" id="L37">        gameParser.resourcesBinding();</span>
+<span class="fc" id="L38">        gameParser.fontBinding();</span>
+<span class="fc" id="L39">        gameParser.runStartFrame();</span>
+<span class="fc" id="L40">        System.out.println(sketchOutputStream());</span>
+<span class="fc" id="L41">    }</span>
+
+    /** Listening to the keyboard and response to every action.
+     * @see PApplet#keyPressed(KeyEvent)  */
+    @Override
+    public void keyPressed(KeyEvent e) {
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        if(e.getKeyCode() == 0x20){ // 0x20 is space</span>
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">            if(gameParser.debugMode){</span>
+<span class="nc" id="L49">                gameParser.clearLastFrame();</span>
+<span class="nc" id="L50">                gameParser.debugMode = false;</span>
+            } else {
+<span class="fc" id="L52">                gameParser.debugMode = true;</span>
+            }
+        }
+<span class="fc" id="L55">    }</span>
+
+    /** Executed in each frame, update the information of the game and refresh the image, called at every frame.
+     * @see PApplet#draw()  */
+    @Override
+    public void draw() {
+<span class="fc" id="L61">        gameParser.runEachFrame();</span>
+<span class="fc" id="L62">    }</span>
+
+    public static void main(String[] args) {
+<span class="nc" id="L65">        PApplet.runSketch(new String[]{&quot;something&quot;}, new App());</span>
+<span class="nc" id="L66">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

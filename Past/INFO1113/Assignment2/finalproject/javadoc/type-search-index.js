@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"ghost","l":"Ambusher"},{"p":"ghost","l":"App"},{"p":"ghost","l":"Chaser"},{"p":"ghost","l":"ConfigReader"},{"p":"ghost","l":"GameParser"},{"p":"ghost","l":"Ghosts"},{"p":"ghost","l":"Ignorant"},{"p":"ghost","l":"Message"},{"p":"ghost","l":"Player"},{"p":"ghost","l":"Whim"}]

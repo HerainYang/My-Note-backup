@@ -1,0 +1,103 @@
+---
+title: "Research of the properties at NewTown in 2017"
+author: "500425334"
+subtitle: "Project 1"
+date: "University of Sydney | DATA1001 | September 2020"
+output:
+  html_document:
+    fig_caption: yes
+    number_sections: yes
+    self_contained: yes
+    theme: flatly
+    toc: true
+    toc_depth: 3
+    toc_float: true
+---
+
+<br>
+
+# Executive Summary
+
+<br>
+
+# Full Report
+
+## Initial Data Analysis (IDA)
+
+Limitation
+- 
+- 
+- 
+
+The Newtown property prices dataset comes from data scraped by [domain](www.domain.com.au) in June 2017. 
+
+```{r}
+# Read in the Newtown data
+property = read.csv("http://www.maths.usyd.edu.au/u/UG/JM/DATA1001/r/current/data/NewtownJune2017.csv")
+str(property)
+
+
+## Quick snapshot
+dim(property)
+str(property)
+```
+
+<br>
+
+## Research Questions (given)
+
+### What was the average price of a property?
+
+```{r}
+# all properties
+mean(property$Sold)
+```
+
+The average price of a property was 1407.143 dollar
+
+### Does the amount of carspots affect the price?
+
+```{r}
+median(property$Sold[property$Carspots=="0"])
+median(property$Sold[property$Carspots=="1"])
+median(property$Sold[property$Carspots=="2"])
+
+mean(property$Sold[property$Carspots=="0"])
+mean(property$Sold[property$Carspots=="1"])
+mean(property$Sold[property$Carspots=="2"])
+boxplot(property$Sold[property$Carspots=="0"],property$Sold[property$Carspots=="1"],property$Sold[property$Carspots=="2"])
+```
+
+Yes, the number of carspotsprop is proportional to the price
+
+###  What were the cheapest properties?
+
+First, we could just sort by the sold price.
+
+```{r}
+# Sort all prices
+sold = property$Sold
+sort(sold)
+```
+
+It would nice to list the details about the cheapest properties. Try the following code.
+
+```{r}
+attach(property)   # The database is attached to the R search path, so variables in the database can be accessed by simply giving their names.
+head(property[order(Sold), ][c(1, 6, 7)], 10)
+```
+The cheapest properties was 514/88 King Street Newtown with no carspot, which sold 370.
+### Assuming commission fees are around 2%, which agency earnt the most over that period? 
+
+```{r}
+# Example of extracting Agent sales
+sort(tapply(property$Sold, INDEX = property$Agent, sum)*0.02)
+```
+RayWhite earnt 347.62 dollar, which is the most in the agents.
+
+## Research Question (own)
+
+
+
+
+

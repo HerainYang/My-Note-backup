@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Chaser.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">finalproject</a> &gt; <a href="index.source.html" class="el_package">ghost</a> &gt; <span class="el_source">Chaser.java</span></div><h1>Chaser.java</h1><pre class="source lang-java linenums">package ghost;
+
+public class Chaser extends Ghosts{
+    /**
+     * set ghost type as Chaser
+     * @see Ghosts#Ghosts(App, int, int, long)
+     * @param windowsFrame Current window of the game
+     * @param origX the starting position of the ghost
+     * @param origY the starting position of the ghost
+     * @param speed the speed of the ghost
+     */
+    public Chaser(App windowsFrame, int origX, int origY, long speed) {
+<span class="fc" id="L13">        super(windowsFrame, origX, origY, speed);</span>
+<span class="fc" id="L14">        setGhost_Type(Ghosts.CHASER);</span>
+<span class="fc" id="L15">    }</span>
+
+    /**
+     * Chase mode: Waka’s position
+     * Scatter mode: Top left corner
+     * @param mode current ghost mode
+     * @param playerPosition  position of the player
+     * @return the target position
+     */
+    @Override
+    public Message findTarget(int mode, Message playerPosition) {
+<span class="fc" id="L26">        current_Matrix_X = X/16;</span>
+<span class="fc" id="L27">        current_Matrix_Y = Y/16;</span>
+
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        if(mode == SCATTERMODE){</span>
+<span class="fc" id="L30">            return leftUp;</span>
+        } else {
+<span class="fc" id="L32">            return playerPosition;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

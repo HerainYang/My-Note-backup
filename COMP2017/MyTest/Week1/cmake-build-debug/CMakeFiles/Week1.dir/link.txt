@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/Week1.dir/main.c.o CMakeFiles/Week1.dir/pointer.c.o  -o Week1 

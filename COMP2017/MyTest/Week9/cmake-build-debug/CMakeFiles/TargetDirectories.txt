@@ -1,0 +1,3 @@
+/home/herain/Documents/COMP2017/MyTest/Week9/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/herain/Documents/COMP2017/MyTest/Week9/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/herain/Documents/COMP2017/MyTest/Week9/cmake-build-debug/CMakeFiles/Week9.dir

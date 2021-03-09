@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/herain/Documents/COMP2017/MyTest/Week8/main.c
+unistd.h
+-
+string.h
+-
+stdlib.h
+-
+stdio.h
+-
+sys/wait.h
+-
+fcntl.h
+-
+errno.h
+-
+sys/shm.h
+-
+

@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/Week7.dir/main.c.o CMakeFiles/Week7.dir/run.c.o  -o Week7 

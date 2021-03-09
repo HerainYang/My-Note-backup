@@ -1,0 +1,690 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameParser.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">finalproject</a> &gt; <a href="index.source.html" class="el_package">ghost</a> &gt; <span class="el_source">GameParser.java</span></div><h1>GameParser.java</h1><pre class="source lang-java linenums">package ghost;
+
+import org.json.simple.parser.ParseException;
+import processing.core.PApplet;
+import processing.core.PFont;
+import processing.core.PImage;
+
+import javax.swing.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Scanner;
+
+/**
+ * main controller of the game, control the logic of the game.
+ */
+public class GameParser {
+<span class="fc" id="L20">    private String[] maps = new String[36];</span>
+<span class="fc" id="L21">    private int remain = 0;</span>
+<span class="fc" id="L22">    private long lives = 3;</span>
+    private long gameSpeed;
+    private long frightenedLength;
+    private long sodaLength;
+<span class="fc" id="L26">    private boolean frightenedModeOn = false;</span>
+<span class="fc" id="L27">    private boolean sodaCanModeOn = false;</span>
+    private long[] ghostMode;
+    private int ghostModeLength;
+    /** Count the current frame of the game. {@value}*/
+<span class="fc" id="L31">    public int frame = 0;</span>
+<span class="fc" id="L32">    private boolean haveChaser = false;</span>
+<span class="fc" id="L33">    private boolean haveWhim = false;</span>
+
+    private PImage horizontal;
+    private PImage downLeft;
+    private PImage downRight;
+    private PImage upLeft;
+    private PImage upRight;
+    private PImage vertical;
+    private PImage fruit;
+    private PImage wakaState_Close;
+    private PImage wakaState_Down;
+    private PImage wakaState_Left;
+    private PImage wakaState_Right;
+    private PImage wakaState_Up;
+    private PImage ambusherImage;
+    private PImage chaserImage;
+    private PImage ignorantImage;
+    private PImage whimImage;
+    private PImage superFruit;
+    private PImage frightenedImage;
+    private PImage sodaCan;
+    private PImage youWin;
+    private PImage gameOver;
+
+    private PFont char_Font;
+
+    private Message playerPrePosition;
+
+    private Player player;
+    private Message playerStartPoint;
+
+    private ArrayList&lt;Ghosts&gt; ghosts;
+    private ArrayList&lt;Message&gt; ghostsStartPoint;
+
+<span class="fc" id="L67">    private int currentState = 0;</span>
+<span class="fc" id="L68">    private int stateStartTime = 0;</span>
+
+    /** If this variables is true, draw the line. {@value}*/
+<span class="fc" id="L71">    public boolean debugMode = false;</span>
+<span class="fc" id="L72">    private int frightenedModeStartTime = 0;</span>
+<span class="fc" id="L73">    private int sodaCanModeStartTime = 0;</span>
+
+
+<span class="fc" id="L76">    Message chaserPosition = null;</span>
+
+    private App gameWindow;
+
+    /**
+     * set a game's screen for this game parser
+     */
+<span class="fc" id="L83">    public GameParser(App gameWindow){</span>
+<span class="fc" id="L84">        this.gameWindow = gameWindow;</span>
+<span class="fc" id="L85">    }</span>
+
+    /**
+     * reading the files of images.
+     */
+    public void resourcesBinding(){
+<span class="fc" id="L91">        System.out.println(this.getClass().getClassLoader().getResource(&quot;horizontal.png&quot;).getPath());</span>
+<span class="fc" id="L92">        horizontal = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;horizontal.png&quot;)).getPath());</span>
+<span class="fc" id="L93">        downLeft = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;downLeft.png&quot;)).getPath());</span>
+<span class="fc" id="L94">        downRight = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;downRight.png&quot;)).getPath());</span>
+<span class="fc" id="L95">        upLeft = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;upLeft.png&quot;)).getPath());</span>
+<span class="fc" id="L96">        upRight = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;upRight.png&quot;)).getPath());</span>
+<span class="fc" id="L97">        vertical = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;vertical.png&quot;)).getPath());</span>
+<span class="fc" id="L98">        fruit = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;fruit.png&quot;)).getPath());</span>
+<span class="fc" id="L99">        wakaState_Close = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;playerClosed.png&quot;)).getPath());</span>
+<span class="fc" id="L100">        wakaState_Down = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;playerDown.png&quot;)).getPath());</span>
+<span class="fc" id="L101">        wakaState_Left = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;playerLeft.png&quot;)).getPath());</span>
+<span class="fc" id="L102">        wakaState_Right = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;playerRight.png&quot;)).getPath());</span>
+<span class="fc" id="L103">        wakaState_Up = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;playerUp.png&quot;)).getPath());</span>
+<span class="fc" id="L104">        ambusherImage = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;ambusher.png&quot;)).getPath());</span>
+<span class="fc" id="L105">        chaserImage = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;chaser.png&quot;)).getPath());</span>
+<span class="fc" id="L106">        ignorantImage = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;ignorant.png&quot;)).getPath());</span>
+<span class="fc" id="L107">        whimImage = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;whim.png&quot;)).getPath());</span>
+<span class="fc" id="L108">        frightenedImage = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;frightened.png&quot;)).getPath());</span>
+<span class="fc" id="L109">        superFruit = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;superFruit.png&quot;)).getPath());</span>
+<span class="fc" id="L110">        sodaCan = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;sodacan.png&quot;)).getPath());</span>
+<span class="fc" id="L111">    }</span>
+
+    /**
+     * reading the files of fonts.
+     * */
+    public void fontBinding(){
+<span class="fc" id="L117">        gameOver = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;over.png&quot;)).getPath());</span>
+<span class="fc" id="L118">        youWin = gameWindow.loadImage(Objects.requireNonNull(this.getClass().getClassLoader().getResource(&quot;win.png&quot;)).getPath());</span>
+<span class="fc" id="L119">    }</span>
+
+    /**
+     * For Junit test, adding ghost to ghost arraylist.
+     * @param new_Ghost the starting position of the ghost
+     */
+    public void addGhostStartPoint(Message new_Ghost){
+<span class="fc" id="L126">        ghostsStartPoint.add(new_Ghost);</span>
+<span class="fc" id="L127">    }</span>
+
+    /**
+     * Called at the start of each time that game starting, reset the ghost mode, reset the frame, adding all ghost again.
+     */
+    public void gameInit(){
+<span class="fc" id="L133">        debugMode = false;</span>
+<span class="fc" id="L134">        frightenedModeOn = false;</span>
+<span class="fc" id="L135">        sodaCanModeOn = false;</span>
+<span class="fc" id="L136">        frame = 0;</span>
+<span class="fc" id="L137">        gameWindow.keyCode = gameWindow.RIGHT;</span>
+<span class="fc" id="L138">        currentState = 0;</span>
+<span class="fc" id="L139">        stateStartTime = 0;</span>
+
+<span class="pc bpc" id="L141" title="1 of 2 branches missed.">        if(playerStartPoint == null) {</span>
+<span class="nc" id="L142">            System.out.println(&quot;Map error: player no found&quot;);</span>
+        }
+<span class="fc" id="L144">        player = new Player(gameWindow, playerStartPoint.X, playerStartPoint.Y, gameSpeed);</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">        for(Message eachGhost : ghostsStartPoint){</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">            if(eachGhost.ghostTypes == Ghosts.AMBUSHER){</span>
+<span class="fc" id="L147">                System.out.println(&quot;add ambusher&quot;);</span>
+<span class="fc" id="L148">                ghosts.add(new Ambusher(gameWindow, eachGhost.X, eachGhost.Y,gameSpeed));</span>
+<span class="fc bfc" id="L149" title="All 2 branches covered.">            } else if (eachGhost.ghostTypes == Ghosts.NORMAL){</span>
+<span class="fc" id="L150">                ghosts.add(new Chaser(gameWindow, eachGhost.X, eachGhost.Y,gameSpeed));</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">            } else if (eachGhost.ghostTypes == Ghosts.CHASER){</span>
+<span class="fc" id="L152">                ghosts.add(new Chaser(gameWindow, eachGhost.X, eachGhost.Y,gameSpeed));</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">            } else if (eachGhost.ghostTypes == Ghosts.IGNORANT){</span>
+<span class="fc" id="L154">                ghosts.add(new Ignorant(gameWindow, eachGhost.X, eachGhost.Y,gameSpeed));</span>
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">            } else if (eachGhost.ghostTypes == Ghosts.WHIM){</span>
+<span class="fc" id="L156">                ghosts.add(new Whim(gameWindow, eachGhost.X, eachGhost.Y,gameSpeed));</span>
+            }
+<span class="fc" id="L158">        }</span>
+<span class="fc" id="L159">    }</span>
+
+    /*
+    backup:
+    if(allRowZero &amp;&amp; gameWindow.gameMaps[i][j] != 0){
+                        allRowZero = false;
+                        colStart = j;
+                    }
+     */
+
+    /**
+     * reading the map file and read the map, render the map using the integer which represent different object. if it is the first time to read the file, then calculate the edge value.
+     * @param firstTime if it is true it means it is the first time to render this map
+     */
+    public void mapRender(boolean firstTime){
+<span class="fc" id="L174">        boolean firstLineBorder = true;</span>
+<span class="fc" id="L175">        int rowStart = 0;</span>
+<span class="fc" id="L176">        int rowEnd = 0;</span>
+<span class="fc" id="L177">        int colStart = 0;</span>
+<span class="fc" id="L178">        int colEnd = 0;</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">        for(int i = 0; i &lt; 36; i++){</span>
+<span class="fc" id="L180">            boolean allRowZero = true;</span>
+<span class="fc bfc" id="L181" title="All 2 branches covered.">            for(int j = 0; j &lt; 28; j++){</span>
+
+<span class="fc bfc" id="L183" title="All 4 branches covered.">                if(firstTime &amp;&amp; maps[i].charAt(j) == 'p'){</span>
+<span class="fc" id="L184">                    System.out.println(&quot;is player&quot;);</span>
+<span class="fc" id="L185">                    gameWindow.gameMaps[i][j] = 0;</span>
+<span class="fc" id="L186">                    playerStartPoint = new Message(j, i, PApplet.RIGHT, null);</span>
+<span class="pc bpc" id="L187" title="1 of 4 branches missed.">                } else if (firstTime &amp;&amp; maps[i].charAt(j) == 'g'){</span>
+                    //ghost location
+<span class="nc" id="L189">                    System.out.println(&quot;is ghost&quot;);</span>
+<span class="nc" id="L190">                    gameWindow.gameMaps[i][j] = 0;</span>
+<span class="nc" id="L191">                    Message newMsg = new Message(j, i, 0, null);</span>
+<span class="nc" id="L192">                    newMsg.ghostTypes = Ghosts.NORMAL;</span>
+<span class="nc" id="L193">                    ghostsStartPoint.add(newMsg);</span>
+<span class="pc bpc" id="L194" title="1 of 4 branches missed.">                } else if(firstTime &amp;&amp; maps[i].charAt(j) == 'a'){</span>
+                    //ghost location
+<span class="nc" id="L196">                    System.out.println(&quot;is ambusher&quot;);</span>
+<span class="nc" id="L197">                    gameWindow.gameMaps[i][j] = 0;</span>
+<span class="nc" id="L198">                    Message newMsg = new Message(j, i, 0, null);</span>
+<span class="nc" id="L199">                    newMsg.ghostTypes = Ghosts.AMBUSHER;</span>
+<span class="nc" id="L200">                    ghostsStartPoint.add(newMsg);</span>
+<span class="pc bfc" id="L201" title="All 4 branches covered.">                } else if(firstTime &amp;&amp; maps[i].charAt(j) == 'c'){</span>
+                    //ghost location
+<span class="fc" id="L203">                    System.out.println(&quot;is chaser&quot;);</span>
+<span class="fc" id="L204">                    gameWindow.gameMaps[i][j] = 0;</span>
+<span class="fc" id="L205">                    Message newMsg = new Message(j, i, 0, null);</span>
+<span class="fc" id="L206">                    newMsg.ghostTypes = Ghosts.CHASER;</span>
+<span class="fc" id="L207">                    haveChaser = true;</span>
+<span class="fc" id="L208">                    ghostsStartPoint.add(0, newMsg);</span>
+<span class="pc bpc" id="L209" title="1 of 4 branches missed.">                } else if(firstTime &amp;&amp; maps[i].charAt(j) == 'i'){</span>
+                    //ghost location
+<span class="nc" id="L211">                    System.out.println(&quot;is ignorant&quot;);</span>
+<span class="nc" id="L212">                    gameWindow.gameMaps[i][j] = 0;</span>
+<span class="nc" id="L213">                    Message newMsg = new Message(j, i, 0, null);</span>
+<span class="nc" id="L214">                    newMsg.ghostTypes = Ghosts.IGNORANT;</span>
+<span class="nc" id="L215">                    ghostsStartPoint.add(newMsg);</span>
+<span class="pc bpc" id="L216" title="1 of 4 branches missed.">                } else if(firstTime &amp;&amp; maps[i].charAt(j) == 'w'){</span>
+                    //ghost location
+<span class="nc" id="L218">                    System.out.println(&quot;is whim&quot;);</span>
+<span class="nc" id="L219">                    gameWindow.gameMaps[i][j] = 0;</span>
+<span class="nc" id="L220">                    Message newMsg = new Message(j, i, 0, null);</span>
+<span class="nc" id="L221">                    newMsg.ghostTypes = Ghosts.WHIM;</span>
+<span class="nc" id="L222">                    haveWhim = true;</span>
+<span class="nc" id="L223">                    ghostsStartPoint.add(newMsg);</span>
+<span class="nc" id="L224">                } else {</span>
+<span class="fc bfc" id="L225" title="All 2 branches covered.">                    if(firstTime) {</span>
+<span class="fc" id="L226">                        gameWindow.gameMaps[i][j] = Integer.parseInt(String.valueOf(maps[i].charAt(j)));</span>
+                    }
+<span class="fc bfc" id="L228" title="All 4 branches covered.">                    if(allRowZero &amp;&amp; gameWindow.gameMaps[i][j] != 0){</span>
+<span class="fc bfc" id="L229" title="All 2 branches covered.">                        if(firstLineBorder)</span>
+<span class="fc" id="L230">                            rowStart = i;</span>
+<span class="fc" id="L231">                        allRowZero = false;</span>
+<span class="fc" id="L232">                        colStart = j;</span>
+                    }
+<span class="pc bpc" id="L234" title="1 of 6 branches missed.">                    if(firstLineBorder &amp;&amp; !allRowZero &amp;&amp; gameWindow.gameMaps[i][j] != 0){</span>
+<span class="fc" id="L235">                        colEnd = j;</span>
+                    }
+                }
+            }
+<span class="fc bfc" id="L239" title="All 2 branches covered.">            if(!allRowZero){</span>
+<span class="fc bfc" id="L240" title="All 2 branches covered.">                if(firstLineBorder){</span>
+<span class="fc" id="L241">                    firstLineBorder = false;</span>
+                }
+<span class="fc" id="L243">                rowEnd = i;</span>
+            }
+        }
+<span class="pc bpc" id="L246" title="3 of 4 branches missed.">        if(!haveChaser &amp;&amp; haveWhim){</span>
+<span class="nc" id="L247">            System.out.println(&quot;There is a whim but no chaser in the game&quot;);</span>
+<span class="nc" id="L248">            gameWindow.exit();</span>
+        }
+<span class="fc" id="L250">        gameWindow.mapLeft = colStart;</span>
+<span class="fc" id="L251">        gameWindow.mapRight = colEnd;</span>
+<span class="fc" id="L252">        gameWindow.mapUp = rowStart;</span>
+<span class="fc" id="L253">        gameWindow.mapDown = rowEnd;</span>
+<span class="fc" id="L254">    }</span>
+
+    /**
+     * Render each grid, if it is the first time to render the map, counting the number of fruit and superfruit
+     * @param x x-axis of the position
+     * @param y y-axis of the position
+     * @param firstTime if it is true it means it is the first time to render this map
+     */
+    public void mapElementRenderSwitch(int x, int y, boolean firstTime){
+<span class="pc bpc" id="L263" title="1 of 11 branches missed.">        switch (gameWindow.gameMaps[y][x]){</span>
+            case 0:{
+<span class="fc" id="L265">                case0(x * 16, y * 16);</span>
+<span class="fc" id="L266">                break;</span>
+            }
+            case 1:{
+<span class="fc" id="L269">                case1(x * 16, y * 16);</span>
+<span class="fc" id="L270">                break;</span>
+            }
+            case 2:{
+<span class="fc" id="L273">                case2(x * 16, y * 16);</span>
+<span class="fc" id="L274">                break;</span>
+            }
+            case 3:{
+<span class="fc" id="L277">                case3(x * 16, y * 16);</span>
+<span class="fc" id="L278">                break;</span>
+            }
+            case 4:{
+<span class="fc" id="L281">                case4(x * 16, y * 16);</span>
+<span class="fc" id="L282">                break;</span>
+            }
+            case 5:{
+<span class="fc" id="L285">                case5(x * 16, y * 16);</span>
+<span class="fc" id="L286">                break;</span>
+            }
+            case 6:{
+<span class="fc" id="L289">                case6(x * 16, y * 16);</span>
+<span class="fc" id="L290">                break;</span>
+            }
+            case 7:{
+<span class="fc bfc" id="L293" title="All 2 branches covered.">                if(firstTime)</span>
+<span class="fc" id="L294">                    remain++;</span>
+<span class="fc" id="L295">                case7(x * 16, y * 16);</span>
+<span class="fc" id="L296">                break;</span>
+            }
+            case 8:{
+<span class="fc bfc" id="L299" title="All 2 branches covered.">                if(firstTime)</span>
+<span class="fc" id="L300">                    remain++;</span>
+<span class="fc" id="L301">                case8(x * 16, y * 16);</span>
+<span class="fc" id="L302">                break;</span>
+            }
+            case 9:{
+<span class="fc" id="L305">                case9(x * 16, y * 16);</span>
+                break;
+            }
+        }
+<span class="fc" id="L309">    }</span>
+
+    private void case0(int x, int y){
+<span class="fc" id="L312">        gameWindow.fill(0, 0, 0);</span>
+<span class="fc" id="L313">        gameWindow.stroke(0, 0, 0);</span>
+<span class="fc" id="L314">        gameWindow.rect(x, y, 16, 16);</span>
+<span class="fc" id="L315">    }</span>
+
+    private void case1(int x, int y){
+<span class="fc" id="L318">        gameWindow.image(horizontal, x, y);</span>
+<span class="fc" id="L319">    }</span>
+
+    private void case2(int x, int y){
+<span class="fc" id="L322">        gameWindow.image(vertical, x, y);</span>
+<span class="fc" id="L323">    }</span>
+
+    private void case3(int x, int y){
+<span class="fc" id="L326">        gameWindow.image(upLeft, x, y);</span>
+<span class="fc" id="L327">    }</span>
+
+    private void case4(int x, int y){
+<span class="fc" id="L330">        gameWindow.image(upRight, x, y);</span>
+<span class="fc" id="L331">    }</span>
+
+    private void case5(int x, int y){
+<span class="fc" id="L334">        gameWindow.image(downLeft, x, y);</span>
+<span class="fc" id="L335">    }</span>
+
+    private void case6(int x, int y){
+<span class="fc" id="L338">        gameWindow.image(downRight, x, y);</span>
+<span class="fc" id="L339">    }</span>
+
+    private void case7(int x, int y){
+<span class="fc" id="L342">        gameWindow.image(fruit, x, y);</span>
+<span class="fc" id="L343">    }</span>
+
+<span class="fc" id="L345">    private void case8(int x, int y){ gameWindow.image(superFruit, x, y);}</span>
+
+<span class="fc" id="L347">    private void case9(int x, int y){ gameWindow.image(sodaCan, x, y);}</span>
+
+<span class="fc" id="L349">    private void renderLives(int x, int y){gameWindow.image(wakaState_Right, x, y);}</span>
+
+    /**
+     * If player is at the same position of fruit, superfruit or soda can, eat this item, if it is fruit, reduce the remain number, if it is a superfruit, reduce the remain number, turn player  into invincible and ghost become frightened, if it is a soda can, the ghost will become invisible.
+     * @param position position of player
+     */
+    public void playerEatSomething(Message position){
+<span class="fc" id="L356">        int currentMatrixX = position.X / 16;</span>
+<span class="fc" id="L357">        int currentMatrixY = position.Y / 16;</span>
+<span class="pc bpc" id="L358" title="1 of 6 branches missed.">        if(position.X % 16 == 0 &amp;&amp; position.Y % 16 == 0 &amp;&amp; gameWindow.gameMaps[currentMatrixY][currentMatrixX] == 7) {</span>
+<span class="fc" id="L359">            gameWindow.gameMaps[currentMatrixY][currentMatrixX] = 0;</span>
+<span class="fc" id="L360">            remain--;</span>
+<span class="fc" id="L361">            System.out.println(remain);</span>
+        }
+<span class="pc bpc" id="L363" title="1 of 6 branches missed.">        if(position.X % 16 == 0 &amp;&amp; position.Y % 16 == 0 &amp;&amp; gameWindow.gameMaps[currentMatrixY][currentMatrixX] == 8) {</span>
+<span class="fc" id="L364">            gameWindow.gameMaps[currentMatrixY][currentMatrixX] = 0;</span>
+<span class="fc" id="L365">            frightenedModeOn = true;</span>
+<span class="fc" id="L366">            frightenedModeStartTime = frame / 60;</span>
+<span class="fc" id="L367">            System.out.println(&quot;frightened mode start at &quot;+ frightenedModeStartTime);</span>
+<span class="fc" id="L368">            remain--;</span>
+<span class="fc" id="L369">            System.out.println(remain);</span>
+        }
+<span class="pc bpc" id="L371" title="1 of 6 branches missed.">        if(position.X % 16 == 0 &amp;&amp; position.Y % 16 == 0 &amp;&amp; gameWindow.gameMaps[currentMatrixY][currentMatrixX] == 9) { // eat soda can</span>
+<span class="fc" id="L372">            gameWindow.gameMaps[currentMatrixY][currentMatrixX] = 0;</span>
+<span class="fc" id="L373">            sodaCanModeOn = true;</span>
+<span class="fc" id="L374">            sodaCanModeStartTime = frame / 60;</span>
+<span class="fc" id="L375">            System.out.println(&quot;soda mode start at &quot;+ sodaCanModeStartTime);</span>
+        }
+<span class="fc" id="L377">    }</span>
+
+    /**
+     * Render the image of player according to player's current direction
+     * @param position position of player
+     */
+    public void playerRender(Message position){
+<span class="fc bfc" id="L384" title="All 2 branches covered.">        if(frame % 16 &lt; 8){</span>
+<span class="fc" id="L385">            gameWindow.image(wakaState_Close, position.X - 4, position.Y - 5);</span>
+        } else {
+<span class="pc bpc" id="L387" title="4 of 5 branches missed.">            switch (position.direction){</span>
+                case PApplet.RIGHT:{
+<span class="fc" id="L389">                    gameWindow.image(wakaState_Right, position.X - 4, position.Y - 5);</span>
+<span class="fc" id="L390">                    break;</span>
+                }
+                case PApplet.LEFT:{
+<span class="nc" id="L393">                    gameWindow.image(wakaState_Left, position.X - 4, position.Y - 5);</span>
+<span class="nc" id="L394">                    break;</span>
+                }
+                case PApplet.DOWN:{
+<span class="nc" id="L397">                    gameWindow.image(wakaState_Down, position.X - 5, position.Y - 4);</span>
+<span class="nc" id="L398">                    break;</span>
+                }
+                case PApplet.UP:{
+<span class="nc" id="L401">                    gameWindow.image(wakaState_Up, position.X - 5, position.Y - 4);</span>
+                    break;
+                }
+            }
+        }
+<span class="fc" id="L406">        playerEatSomething(position);</span>
+<span class="fc" id="L407">    }</span>
+
+    private void ghostRender(Message position, int ghost_Type) {
+<span class="fc bfc" id="L410" title="All 2 branches covered.">        if (frightenedModeOn) {</span>
+<span class="fc" id="L411">            gameWindow.image(frightenedImage, position.X - 6, position.Y - 6);</span>
+        } else {
+<span class="pc bpc" id="L413" title="1 of 2 branches missed.">            if (ghost_Type == Ghosts.AMBUSHER) {</span>
+<span class="nc" id="L414">                gameWindow.image(ambusherImage, position.X - 6, position.Y - 6);</span>
+<span class="pc bpc" id="L415" title="1 of 2 branches missed.">            } else if (ghost_Type == Ghosts.CHASER) {</span>
+<span class="fc" id="L416">                gameWindow.image(chaserImage, position.X - 6, position.Y - 6);</span>
+<span class="nc bnc" id="L417" title="All 2 branches missed.">            } else if (ghost_Type == Ghosts.IGNORANT) {</span>
+<span class="nc" id="L418">                gameWindow.image(ignorantImage, position.X - 6, position.Y - 6);</span>
+<span class="nc bnc" id="L419" title="All 2 branches missed.">            } else if (ghost_Type == Ghosts.WHIM) {</span>
+<span class="nc" id="L420">                gameWindow.image(whimImage, position.X - 6, position.Y - 6);</span>
+            }
+        }
+<span class="fc" id="L423">    }</span>
+
+    /**
+     * Clean the image and redraw it
+     */
+    public void clearLastFrame(){
+<span class="fc" id="L429">        gameWindow.background(0, 0, 0);</span>
+<span class="fc" id="L430">        mapRender(false);</span>
+<span class="fc bfc" id="L431" title="All 2 branches covered.">        for(int i = 0; i &lt; 36; i++) {</span>
+<span class="fc bfc" id="L432" title="All 2 branches covered.">            for (int j = 0; j &lt; 28; j++) {</span>
+<span class="fc" id="L433">                mapElementRenderSwitch(j, i, false);</span>
+            }
+        }
+<span class="fc bfc" id="L436" title="All 2 branches covered.">        for(int i = 0; i &lt; lives; i++){</span>
+<span class="fc" id="L437">            renderLives(i * 30, 34 * 16);</span>
+        }
+<span class="fc" id="L439">    }</span>
+
+    /**
+     * For Junit test, turn on or off the frightened mode
+     * @param onOrOff if it is true it means turn on the frightened mode
+     */
+    public void setFrightenedModeOn(boolean onOrOff){
+<span class="fc" id="L446">        frightenedModeOn = onOrOff;</span>
+<span class="fc" id="L447">    }</span>
+
+    /**
+     * Update the counter of ghost mode, change the mode to normal if it's over
+     */
+    public void updateGhostMode(){
+<span class="fc bfc" id="L453" title="All 2 branches covered.">        if(frame % 60 == 0){</span>
+<span class="pc bpc" id="L454" title="1 of 2 branches missed.">            if(frightenedModeOn){</span>
+<span class="pc bpc" id="L455" title="1 of 2 branches missed.">                if(frame / 60  &gt; frightenedModeStartTime + frightenedLength){</span>
+<span class="fc" id="L456">                    frightenedModeOn = false;</span>
+<span class="fc" id="L457">                    stateStartTime += frightenedLength;</span>
+                }
+            }
+<span class="pc bpc" id="L460" title="1 of 2 branches missed.">            if(sodaCanModeOn){</span>
+<span class="nc bnc" id="L461" title="All 2 branches missed.">                if(frame / 60  &gt; sodaCanModeStartTime + sodaLength){</span>
+<span class="nc" id="L462">                    sodaCanModeOn = false;</span>
+<span class="nc" id="L463">                    stateStartTime += sodaLength;</span>
+                }
+            }
+<span class="pc bpc" id="L466" title="1 of 2 branches missed.">            if(frame / 60 &gt; stateStartTime + ghostMode[currentState]){</span>
+<span class="fc" id="L467">                currentState++;</span>
+<span class="fc" id="L468">                currentState = currentState % ghostModeLength;</span>
+<span class="fc" id="L469">                stateStartTime = frame / 60;</span>
+<span class="fc" id="L470">                System.out.println(&quot;Mode change!&quot;);</span>
+            }
+        }
+<span class="fc" id="L473">    }</span>
+
+    /**
+     * Draw the debug line between ghost and it's target
+     * @param ghostMessage a message contain the position of the ghost and the position of ghost's current target
+     */
+    public void drawDebugLine(Message ghostMessage){
+<span class="nc" id="L480">        gameWindow.stroke(255, 255, 255);</span>
+<span class="nc" id="L481">        gameWindow.line(ghostMessage.X + 8, ghostMessage.Y + 8, ghostMessage.target.X + 8, ghostMessage.target.Y + 8);</span>
+<span class="nc" id="L482">    }</span>
+
+    /**
+     * reload the ghosts, refresh the map, replace the props and reset the basic properties (lives, speed, length of the mode) by reading the file.
+     */
+    public void refreshData(){
+<span class="fc" id="L488">        ghostsStartPoint = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L489">        String mapPath = null;</span>
+<span class="fc" id="L490">        ghosts = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L491">        remain = 0;</span>
+<span class="fc" id="L492">        frame = 0;</span>
+
+        try {
+<span class="fc" id="L495">            ConfigReader configReader = new ConfigReader();</span>
+<span class="fc" id="L496">            gameSpeed = configReader.getSpeed();</span>
+<span class="fc" id="L497">            ghostMode = configReader.getGhostMode();</span>
+<span class="fc" id="L498">            lives = configReader.getLives();</span>
+<span class="fc" id="L499">            frightenedLength = configReader.getFrightenedLength();</span>
+<span class="fc" id="L500">            sodaLength = configReader.getSodaLength();</span>
+<span class="fc" id="L501">            mapPath = configReader.getMapFile();</span>
+<span class="fc" id="L502">            ghostModeLength = 0;</span>
+<span class="fc bfc" id="L503" title="All 2 branches covered.">            for(long time: ghostMode){</span>
+<span class="fc" id="L504">                ghostModeLength += time;</span>
+            }
+<span class="nc" id="L506">        } catch (IOException | ParseException e){</span>
+<span class="nc" id="L507">            e.printStackTrace();</span>
+<span class="nc" id="L508">            System.exit(0);</span>
+<span class="fc" id="L509">        }</span>
+
+<span class="fc" id="L511">        File map = new File(mapPath);</span>
+        try {
+<span class="fc" id="L513">            Scanner scanner = new Scanner(map);</span>
+<span class="fc bfc" id="L514" title="All 2 branches covered.">            for(int i = 0; i &lt; 36; i++){</span>
+<span class="fc" id="L515">                maps[i] = scanner.nextLine();</span>
+            }
+<span class="nc" id="L517">        } catch (FileNotFoundException e) {</span>
+<span class="nc" id="L518">            e.printStackTrace();</span>
+<span class="fc" id="L519">        }</span>
+<span class="fc" id="L520">    }</span>
+
+    /**
+     * Run the first frame of the game, refresh the data and draw the map.
+     */
+    public void runStartFrame(){
+<span class="fc" id="L526">        System.out.println(&quot;run new game!&quot;);</span>
+<span class="fc" id="L527">        gameWindow.background(0,0,0);</span>
+<span class="fc" id="L528">        refreshData();</span>
+<span class="fc" id="L529">        System.out.println(lives);</span>
+<span class="fc" id="L530">        drawStartMap();</span>
+<span class="fc" id="L531">    }</span>
+
+    /**
+     * read every grids and draw they out, initialize the position of player.
+     */
+    public void drawStartMap(){
+<span class="fc" id="L537">        gameWindow.frameRate(60);</span>
+<span class="fc" id="L538">        mapRender(true);</span>
+<span class="fc bfc" id="L539" title="All 2 branches covered.">        for(int i = 0; i &lt; 36; i++) {</span>
+<span class="fc bfc" id="L540" title="All 2 branches covered.">            for (int j = 0; j &lt; 28; j++) {</span>
+<span class="fc" id="L541">                mapElementRenderSwitch(j, i, true);</span>
+            }
+        }
+<span class="fc" id="L544">        gameInit();</span>
+<span class="fc" id="L545">        playerPrePosition = new Message(playerStartPoint.X, playerStartPoint.Y, 0, null);</span>
+<span class="fc" id="L546">    }</span>
+
+    /**
+     * See if player is caught by a ghost
+     * @param ghostPosition the position of the ghost
+     * @param playerPosition the position of the player
+     * @return true when one is run into another
+     */
+    public boolean catchTarget(Message ghostPosition, Message playerPosition){
+<span class="pc bpc" id="L555" title="3 of 8 branches missed.">        if((ghostPosition.X &lt;= playerPosition.X &amp;&amp; playerPosition.X &lt; ghostPosition.X + 16) &amp;&amp; (ghostPosition.Y &lt;= playerPosition.Y &amp;&amp; playerPosition.Y &lt; ghostPosition.Y + 16)){</span>
+<span class="fc" id="L556">            System.out.println(&quot;error 1&quot;);</span>
+<span class="fc" id="L557">            System.out.println(&quot;ghost: X: &quot; + ghostPosition.X + &quot;, Y: &quot;+ghostPosition.Y+&quot;, and player: Y: &quot;+playerPosition.X+&quot;, Y: &quot;+ playerPosition.Y);</span>
+<span class="fc" id="L558">            return true;</span>
+        }
+<span class="pc bpc" id="L560" title="3 of 8 branches missed.">        if((playerPosition.X &lt;= ghostPosition.X &amp;&amp; ghostPosition.X &lt; playerPosition.X + 16) &amp;&amp; (playerPosition.Y &lt;= ghostPosition.Y &amp;&amp; ghostPosition.Y &lt; playerPosition.Y + 16)){</span>
+<span class="fc" id="L561">            System.out.println(&quot;error 2&quot;);</span>
+<span class="fc" id="L562">            System.out.println(&quot;ghost: X: &quot; + ghostPosition.X + &quot;, Y: &quot;+ghostPosition.Y+&quot;, and player: Y: &quot;+playerPosition.X+&quot;, Y: &quot;+ playerPosition.Y);</span>
+<span class="fc" id="L563">            return true;</span>
+        }
+<span class="fc" id="L565">        return false;</span>
+    }
+
+    private int startFrame;
+<span class="fc" id="L569">    private boolean startSleep = false;</span>
+
+    /**
+     * Count specific seconds
+     * @param seconds Seconds need to wait
+     * @return If it's already delay the specific seconds, return true
+     */
+    public boolean sleep(int seconds){
+<span class="fc bfc" id="L577" title="All 2 branches covered.">        if(!startSleep){</span>
+<span class="fc" id="L578">            startSleep = true;</span>
+<span class="fc" id="L579">            startFrame = frame;</span>
+<span class="fc" id="L580">            System.out.println(&quot;Start counting&quot;);</span>
+        } else {
+<span class="fc bfc" id="L582" title="All 2 branches covered.">            if(frame % 60 == 0){</span>
+<span class="fc" id="L583">                System.out.println(frame / 60 + &quot;s&quot;);</span>
+            }
+<span class="fc bfc" id="L585" title="All 2 branches covered.">            if(frame &gt; startFrame + seconds * 60){</span>
+<span class="fc" id="L586">                System.out.println(&quot;over counting!&quot;);</span>
+<span class="fc" id="L587">                startSleep = false;</span>
+<span class="fc" id="L588">                return true;</span>
+            }
+<span class="fc" id="L590">            return false;</span>
+        }
+<span class="fc" id="L592">        return false;</span>
+    }
+
+    /**
+     * Start a new game
+     */
+    public void runNewGame(){
+<span class="pc bpc" id="L599" title="1 of 2 branches missed.">        if(sleep(10)){</span>
+<span class="nc" id="L600">            System.out.println(&quot;it's time to start new game&quot;);</span>
+<span class="nc" id="L601">            runStartFrame();</span>
+        }
+<span class="fc" id="L603">    }</span>
+
+    /**
+     * Run in each frame and renew the information
+     * If there is not remaining fruit or lives, game restart after 10 seconds
+     * In each frame, ghost and player run and this system will detect whether they are in the same grids (collision)
+     * In debug mode, it will draw a white line
+     * In frightened mode, ghost will change the image and if they encounter the player, they will die
+     * In soda can mode, ghost will not display but debug line still works
+     */
+    public void runEachFrame(){
+<span class="fc" id="L614">        frame++;</span>
+<span class="fc bfc" id="L615" title="All 2 branches covered.">        if(remain == 0){</span>
+<span class="fc" id="L616">            fontBinding();</span>
+<span class="fc" id="L617">            gameWindow.background(0, 0, 0);</span>
+<span class="fc" id="L618">            gameWindow.fill(255, 255, 255);</span>
+<span class="fc" id="L619">            gameWindow.image(youWin, 20, 250);</span>
+<span class="fc" id="L620">            runNewGame();</span>
+<span class="pc bpc" id="L621" title="1 of 2 branches missed.">        } else if (lives == 0){</span>
+<span class="nc" id="L622">            fontBinding();</span>
+<span class="nc" id="L623">            gameWindow.background(0, 0, 0);</span>
+<span class="nc" id="L624">            gameWindow.fill(255, 255, 255);</span>
+<span class="nc" id="L625">            gameWindow.image(gameOver, 20, 250);</span>
+<span class="nc" id="L626">            runNewGame();</span>
+        } else {
+<span class="fc" id="L628">            clearLastFrame();</span>
+<span class="fc" id="L629">            updateGhostMode();</span>
+<span class="fc" id="L630">            playerPrePosition = player.run();</span>
+<span class="fc bfc" id="L631" title="All 2 branches covered.">            for(int i = 0; i &lt; ghosts.size(); i++){</span>
+                Message ghostPosition;
+<span class="fc" id="L633">                int ghost_Type = ghosts.get(i).getGhost_Type();</span>
+
+<span class="pc bpc" id="L635" title="1 of 2 branches missed.">                if(ghost_Type == Ghosts.WHIM){ // if ghost is type whim, we have to pass the position of chaser</span>
+<span class="nc" id="L636">                    Whim whim = (Whim) ghosts.get(i);</span>
+<span class="nc" id="L637">                    whim.passChaserPosition(chaserPosition);</span>
+                }
+
+<span class="fc bfc" id="L640" title="All 2 branches covered.">                if(frightenedModeOn){// different behaviour when in frightened mode and normal two modes</span>
+<span class="fc" id="L641">                    ghostPosition = ghosts.get(i).escape(frame);</span>
+                } else {
+<span class="pc bpc" id="L643" title="1 of 2 branches missed.">                    if (currentState % 2 == 0){</span>
+<span class="fc" id="L644">                        ghostPosition = ghosts.get(i).run(Ghosts.SCATTERMODE, playerPrePosition);</span>
+                    } else{
+<span class="nc" id="L646">                        ghostPosition = ghosts.get(i).run(Ghosts.CHASEMODE, playerPrePosition);</span>
+                    }
+                }
+
+<span class="pc bpc" id="L650" title="2 of 4 branches missed.">                if(i == 0 &amp;&amp; ghost_Type == Ghosts.CHASER){</span>
+<span class="fc" id="L651">                    chaserPosition = ghostPosition;</span>
+<span class="nc bnc" id="L652" title="All 2 branches missed.">                } else if (i == 0){</span>
+<span class="nc" id="L653">                    chaserPosition = null;</span>
+                }
+
+<span class="pc bpc" id="L656" title="1 of 2 branches missed.">                if(debugMode) // in debug mode, need to draw line</span>
+<span class="nc" id="L657">                    drawDebugLine(ghostPosition);</span>
+<span class="pc bpc" id="L658" title="1 of 2 branches missed.">                if(catchTarget(ghostPosition, playerPrePosition)){</span>
+<span class="nc bnc" id="L659" title="All 2 branches missed.">                    if(frightenedModeOn){</span>
+<span class="nc" id="L660">                        ghosts.remove(i);</span>
+<span class="nc" id="L661">                        i--;</span>
+<span class="nc" id="L662">                        continue;</span>
+
+                    } else {
+<span class="nc" id="L665">                        lives--;</span>
+<span class="nc bnc" id="L666" title="All 2 branches missed.">                        if(lives &gt; 0){</span>
+<span class="nc" id="L667">                            gameWindow.background(0, 0, 0);</span>
+<span class="nc" id="L668">                            ghosts.clear();</span>
+<span class="nc" id="L669">                            mapRender(false);</span>
+<span class="nc bnc" id="L670" title="All 2 branches missed.">                            for(int k = 0; k &lt; 36; k++) {</span>
+<span class="nc bnc" id="L671" title="All 2 branches missed.">                                for (int j = 0; j &lt; 28; j++) {</span>
+<span class="nc" id="L672">                                    mapElementRenderSwitch(j, k, false);</span>
+                                }
+                            }
+<span class="nc" id="L675">                            gameInit();</span>
+                        }
+                    }
+                }
+<span class="pc bpc" id="L679" title="1 of 2 branches missed.">                if(!sodaCanModeOn)</span>
+<span class="fc" id="L680">                    ghostRender(ghostPosition, ghost_Type);</span>
+                else
+<span class="nc" id="L682">                    System.out.println(&quot;don't render&quot;);</span>
+            }
+
+
+<span class="fc" id="L686">            playerRender(playerPrePosition);</span>
+        }
+<span class="fc" id="L688">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/Week11.dir/main.c.o  -o Week11  -lpthread 

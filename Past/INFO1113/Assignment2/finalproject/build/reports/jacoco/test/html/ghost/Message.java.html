@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Message.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">finalproject</a> &gt; <a href="index.source.html" class="el_package">ghost</a> &gt; <span class="el_source">Message.java</span></div><h1>Message.java</h1><pre class="source lang-java linenums">package ghost;
+
+import java.util.Objects;
+
+/**
+ * this class is used to transfer position data
+ */
+public class Message {
+    /** x-axis of position {@value}*/
+    int X;
+    /** y-axis of position {@value}*/
+    int Y;
+    int direction;
+    /** target's position (if it have a target) {@value}*/
+    Message target;
+    /** type of ghost (if it is a ghost) {@value}*/
+    int ghostTypes;
+
+    /**
+     * @param X
+     * @param Y
+     * @param direction
+     * @param target
+     */
+<span class="fc" id="L25">    public Message(int X, int Y, int direction, Message target){</span>
+<span class="fc" id="L26">        this.X = X;</span>
+<span class="fc" id="L27">        this.Y = Y;</span>
+<span class="fc" id="L28">        this.direction = direction;</span>
+<span class="fc" id="L29">        this.target = target;</span>
+<span class="fc" id="L30">    }</span>
+
+    /**
+     * copy a message's information to another message
+     * @param m1
+     * @param m2
+     */
+    public static void copy(Message m1, Message m2){
+<span class="fc" id="L38">        m1.X = m2.X;</span>
+<span class="fc" id="L39">        m1.Y = m2.Y;</span>
+<span class="fc" id="L40">        m1.direction = m2.direction;</span>
+<span class="fc" id="L41">        m1.target = m2.target;</span>
+<span class="fc" id="L42">        m1.ghostTypes = m2.ghostTypes;</span>
+<span class="fc" id="L43">    }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

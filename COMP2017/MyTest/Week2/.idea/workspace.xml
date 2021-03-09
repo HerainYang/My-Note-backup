@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated />
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2ff762e9-79a7-45bf-9604-b6c23a60476d" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ProjectId" id="1nv29dQAzkLvbV6sv2SMvhSthhL" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="cf.first.check.clang-format" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2ff762e9-79a7-45bf-9604-b6c23a60476d" name="Default Changelist" comment="" />
+      <created>1612256093509</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1612256093509</updated>
+      <workItem from="1612256094700" duration="386000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1104" y="320" width="668" height="589" key="#Week2" timestamp="1612256368696">
+      <screen x="0" y="27" width="1920" height="1173" />
+    </state>
+    <state x="1104" y="320" width="668" height="589" key="#Week2/0.27.1920.1173@0.27.1920.1173" timestamp="1612256368696" />
+    <state x="1176" y="363" width="524" height="514" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1612256391995">
+      <screen x="0" y="27" width="1920" height="1173" />
+    </state>
+    <state x="1176" y="363" width="524" height="514" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.27.1920.1173@0.27.1920.1173" timestamp="1612256391995" />
+    <state x="1223" y="361" width="424" height="525" key="FileChooserDialogImpl" timestamp="1612256475795">
+      <screen x="0" y="27" width="1920" height="1173" />
+    </state>
+    <state x="1223" y="361" width="424" height="525" key="FileChooserDialogImpl/0.27.1920.1173@0.27.1920.1173" timestamp="1612256475795" />
+  </component>
+</project>
