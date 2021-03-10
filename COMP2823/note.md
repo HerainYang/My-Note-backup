@@ -518,3 +518,9 @@ Evaluation:
 #### Cuckoo hashing
 
 <img src="/home/herain/Documents/COMP2823/notepic/Screenshot from 2021-03-10 15-06-09.png" alt="Screenshot from 2021-03-10 15-06-09" style="zoom:50%;" />
+
+* Use two lookup, $T_1$ and $T_2$, each of size N.
+* Use two hash functions for two lookup respectively.
+* For key k, there are two possible places to store.
+* The worst-case expected $O(1)$ for put and remove.
+
