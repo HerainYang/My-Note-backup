@@ -343,6 +343,8 @@ Implement:
 2. Find location for new node.
 3. Restore the heap-order property (bottom up).
 
+* $O(\log n)$
+
 ---
 
 ### Removal
@@ -351,9 +353,11 @@ Implement:
 2. Delete the last one.
 3. Restore the heap-order property (Top down).
 
+* $O(\log n)$
+
 ---
 
-## Heap sort
+### Heap sort
 
 Using an array to store heap:
 
@@ -366,3 +370,151 @@ Main idea:
 1. Construct a heap:
    * Max heap for ascending order
    * Min heap for descending order
+
+2. Exchange the value of the `array[0]` and `array[i]`
+   * `i = size - 1` at the beginning.
+   * Decrease by 1 each time.
+3. Re-establish max heap.
+
+---
+
+#### Heap in array
+
+* A heap on n keys can be constructed in $O(n)$ time.
+* The n remove_min still take $O(n log n)$ time
+
+---
+
+#### Heapify
+
+Building a priority queue into a max or min heap only take $O(n)$.
+
+For dequeuing, just remove the minimum number in the heap.
+
+---
+
+# Week 5
+
+## Hash
+
+* A **hash function h** is used to map keys to corresponding indices in an array A.
+  * h is a mathematical function.
+  * h is fairly efficient to compute.
+* A **hash table** for a given key type K consists of:
+  * Hash function h: $K \rightarrow [0, N-1]$
+  * Array of size $N$
+  * Ideally, item (x, o) is stored at $A[h(x)]$
+
+---
+
+### Hash Functions
+
+A hash function h is usually the composition of two functions:
+
+* Hash code:
+
+  Transform keys to integers.
+
+* Compression function:
+
+  Transform integers to indices.
+
+---
+
+#### Common Hash Codes
+
+* view the key k as a tuple of integers $(x_1,x_2,...x_d)$ with each being an integer in the range $[0, M-1]$ for some M.
+* view the key k as nonnegative integer.
+
+---
+
+#### Summing components
+
+Used for keys $k=(x_1,x_2,...x_d)$:
+
+* $h(k)=\sum _i x_i$.
+* $h(k)=\sum _i x_i \ mod \ p$ where p is a prime.
+* $h(k)=\oplus _i x_i mod p$
+* $h(k) = x_1a^{d-1}+x_2a^{d-2}+...+x_{d-1}a+x_d$
+
+---
+
+#### Modular division
+
+Used on keys k that are positive integers $h(k) = k \ mod \ N$
+
+---
+
+#### Universal hash functions
+
+Let H be a family of hash functions $[0, M]\rightarrow[0,N-1]$.
+
+$H$ is **2-universal** if picking h uniformly at random (UAR) from H yields that for any two keys i and j:
+$$
+Pr[h(i) = h(j)] <= 1/N
+$$
+Fact: Let $h$ be a function chosen UAR from a 2-universal family then the expected number of collision for a given key k in a set S of n keys is $n/N$.
+
+---
+
+#### Random Linear Hash Function
+
+Used on keys k that are positive integers:
+$$
+h(k) = ((ak+b)mod \ p)mod \ N
+$$
+For some primer number p, and a and b are chosen UAR from [0, p-1] with $a\neq 0$.
+
+---
+
+### Collision Handling
+
+* Separate chaining
+* Linear probing
+* Cuckoo hashing
+
+---
+
+#### Separate chaining
+
+If two or more element hash into  the same location, put they into the list in that location.
+
+---
+
+#### Load Factor
+
+Assume $n$ keys are mapped to $[0, N-1]$, then **load factor**:
+$$
+\alpha = \frac{n}{N}
+$$
+In Separate chaining, The expected time for hash table operations is $O(1+\alpha)$, but when all the items collide into a single chain, it will become $O(n)$.
+
+* In Java, $\alpha < 0.75$
+* In Python, $\alpha < 0.66$
+
+---
+
+#### Open addressing using Linear Probing
+
+Open addressing: the colliding item is placed in a different cell of the table.
+
+Linear probing: handles collisions by placing the colliding item in the next available cell.
+
+##### Updates with Linear Probing
+
+To handle insertions and deletions, use `DEFUNCT` to replaces deleted elements. If target element is deleted directly, `get()` function might be interrupted.
+
+* `get()`: Pass over cells with `DEFUNCT` and keep probing until the element is found or reaching an empty cell.
+* `remove()`: If element is found, replace it with the special item DEFUNCT.
+* `put()`: If element is found, update it. If element is not found, insert element into the first cell we find that has `DEFUNCT` or empty.
+
+Evaluation:
+
+* In the worst case, all operation take $O(n)$ time.
+* Expected number of probes for each get and put is $\frac{1}{1-\alpha}$
+
+---
+
+#### Cuckoo hashing
+
+<img src="/home/herain/Documents/COMP2823/notepic/Screenshot from 2021-03-10 15-06-09.png" alt="Screenshot from 2021-03-10 15-06-09" style="zoom:50%;" />

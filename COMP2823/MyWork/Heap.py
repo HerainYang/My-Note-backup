@@ -21,6 +21,19 @@ def upheap(array, index):
         else:
             break
 
+def upheapIter(array, index):
+    i = index
+    k = parent(index)
+    temp = array[i]
+    while(k > 0):
+        if array[i] < array[k]:
+            array[i] = array[k]
+            i = k
+        else:
+            break
+        k = parent(k)
+    array[i] = temp
+
 def insert(heap, key):
     if heap.size == 100:
         return
@@ -29,18 +42,36 @@ def insert(heap, key):
     heap.size+=1
     upheap(heap.array, lastIndex)
 
-def downheap(array, index, size):
+def downheapRec(array, index, size):
     while index < size:
-        if array[leftChild(index)] is not None and array[index] > array[leftChild(index)]:
+        if leftChild(index) < size and array[index] > array[leftChild(index)]:
             print(array[index], "is bigger than lc", array[leftChild(index)])
             swap(array, index, leftChild(index))
-            downheap(array, leftChild(index), size)
-        elif array[rightChild(index)] is not None and array[index] > array[rightChild(index)]:
+            downheapRec(array, leftChild(index), size)
+        elif rightChild(index) < size and array[index] > array[rightChild(index)]:
             print(array[index], "is bigger than rc", array[rightChild(index)])
             swap(array, index, rightChild(index))
-            downheap(array, rightChild(index), size)
+            downheapRec(array, rightChild(index), size)
         else:
             break
+
+def downheapIter(array, index, size):
+    i = index
+    temp = array[i]
+    k = leftChild(i)
+    while k < size:
+        if array[k] < temp:
+            array[i] = array[k]
+            i = k
+        elif k + 1 < size and array[k] < temp:
+            k+=1
+            array[i] = array[k]
+            i = k
+        else:
+            break
+        k = leftChild(k)
+    array[i] = temp
+
 
 def removeMin(heap):
     if heap.size == 0:
@@ -51,7 +82,7 @@ def removeMin(heap):
     heap.size -= 1
     last = heap.array[heap.size]
     heap.array[0] = last
-    downheap(heap.array, 0, heap.size)
+    downheapRec(heap.array, 0, heap.size)
 
 
 class heap(object):
@@ -81,3 +112,10 @@ if __name__ == '__main__':
 
     for i in range(newHeap.size):
         print(newHeap.array[i])
+
+    # array = [1,3,5,7,9,2,4,6,8,10]
+    # n = len(array)
+    # for i in range(n-1, 0, -1):
+    #     downheapIter(array, i, n)
+    # for i in range(n):
+    #     print(array[i])
