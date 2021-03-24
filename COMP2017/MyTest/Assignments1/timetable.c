@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include <errno.h>
 #include <zconf.h>
 #include "timetable.h"
+#define MAXSTRINGSIZE 4096
 
 /**
  * Transfer string into time format.
@@ -40,7 +40,7 @@ int checkArguments(struct plan* plan, int argc, char* args[]){
     plan->Source = args[1];
     plan->Destination = args[2];
     if(castStringToTime(args[3], &plan->arriveTime) == -1){
-        printf("Time format wrong\n");
+        printf("> Argument <3> has a wrong format of time, please enter time as hh:mm:ss\n");
         return -1;
     }
     return 0;
@@ -74,7 +74,6 @@ int copy(int* index, char* sourceString, char* targetString){
     int i_target = 0;
     for (; !endOfAttr(index, sourceString); (*index)++, i_target++){
         if(sourceString[i_target] == '\0') {
-            printf("error\n");
             return -1;
         }
         targetString[i_target] = sourceString[*index];
@@ -163,32 +162,37 @@ int testSuitable(struct plan* myPlan, struct plan* tempPlan){
 int main(int argc, char* args[]) {
     struct plan myPlan;
     struct plan tempPlan;
+    char anything[MAXSTRINGSIZE];
     char tempSource[1000];
     tempPlan.Source = tempSource;
     char tempDestination[1000];
     tempPlan.Destination = tempDestination;
+    int flag;
+    int line = 0;
 
     struct time nextTime = {60, 60, 60};
-    char anything[4096];
+
 
     if(checkArguments(&myPlan, argc, args) == -1){
         return 0;
     }
 
     if(isatty(0) == 1){
-        printf("Please input data using redirect\n");
+        printf("> Please input data using redirect\n");
         return 0;
     }
 
     while(fgets(anything, 4096, stdin) != NULL){
-        if(splitStringToPlan(anything, &tempPlan) != 1)
+        line++;
+        flag = splitStringToPlan(anything, &tempPlan);
+        if(flag == -1)
         {
-            printf("input file format error\n");
-            return 0;
+            printf("> There is a wrong format in line %d, please check the input file\n", line);
+            continue;
+        } else if (flag == -2){
+            printf("> There is a wrong format of time in line %d, please enter time as hh:mm:ss", line);
         }
-
-        //printf("Current input to %s from %s departs at %02d:%02d:%02d\n", tempPlan.Destination, tempPlan.Source, tempPlan.arriveTime.hour, tempPlan.arriveTime.minute, tempPlan.arriveTime.second);
-
+        
         if(testSuitable(&myPlan, &tempPlan) == 1){
             if(timeSuitable(&tempPlan.arriveTime, &nextTime) == 1){
                 nextTime.hour = tempPlan.arriveTime.hour;

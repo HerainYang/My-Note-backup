@@ -6,9 +6,13 @@
 
 #IncludeRegexTransform: 
 
-/home/herain/Documents/COMP2017/MyTest/Assignments1/main.c
+/home/herain/Documents/COMP2017/MyTest/Assignments1/timetable.c
 stdio.h
 -
-errno.h
+zconf.h
 -
+timetable.h
+/home/herain/Documents/COMP2017/MyTest/Assignments1/timetable.h
+
+/home/herain/Documents/COMP2017/MyTest/Assignments1/timetable.h
 

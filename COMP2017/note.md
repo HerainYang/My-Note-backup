@@ -992,12 +992,11 @@ To resume the process:
     ```c
     if((pid = fork()) == 0){//child process
         kill(pid, SIGSTOP);
-        pause();
     } else {//parent process
         kill(pid, SIGCONT);
     }
     ```
-
+  
 * Both:
 
   * `SIGKILL` also known as `kill -9`, the signal that uncatchable and will terminate the process.
