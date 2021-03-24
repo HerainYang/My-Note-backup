@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/herain/Documents/COMP3308/Assignment/Code/Astar.cpp
+Astar.h
+/home/herain/Documents/COMP3308/Assignment/Code/Astar.h
+
+/home/herain/Documents/COMP3308/Assignment/Code/Astar.h
+BasicAlgorithm.h
+/home/herain/Documents/COMP3308/Assignment/Code/BasicAlgorithm.h
+
+/home/herain/Documents/COMP3308/Assignment/Code/BasicAlgorithm.h
+queue
+-
+array
+-
+list
+-
+
